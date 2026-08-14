@@ -53,7 +53,7 @@
                 </button>
             </form>
             <div class="mt-6 p-3 bg-blue-50 border border-blue-100 rounded-lg text-xs text-blue-800 text-center">
-                <i class="fas fa-info-circle"></i> Gunakan Username <b>admin</b> dan Password <b>admin123</b>
+                <i class="fas fa-shield-alt"></i> Terhubung langsung ke Database SMAN 1 Parung
             </div>
         </div>
     </div>
@@ -76,8 +76,8 @@
                 <!-- Profile / Logout -->
                 <div class="flex items-center gap-4">
                     <div class="hidden sm:block text-right">
-                        <p class="text-sm font-bold leading-tight" id="userNameDisplay">Admin</p>
-                        <p class="text-xs text-indigo-200">Guru BK</p>
+                        <p class="text-sm font-bold leading-tight" id="userNameDisplay">Guru BK</p>
+                        <p class="text-xs text-indigo-200">Akses Sistem Aktif</p>
                     </div>
                     <button onclick="prosesLogout()" class="p-2 bg-indigo-800 hover:bg-red-500 rounded-lg text-white smooth-transition shadow-sm" title="Keluar">
                         <i class="fas fa-sign-out-alt"></i>
@@ -509,81 +509,35 @@
 
     <!-- ==================== SCRIPT JAVASCRIPT ==================== -->
     <script>
-        const IS_DEV = typeof google === 'undefined';
+        // MASUKKAN URL GOOGLE SCRIPT MU DI SINI
+        const API_URL = 'https://script.google.com/macros/s/AKfycbwKzKuSUov87FM_qgWriQAAJfj7CPA5MFQN3_fbsMGL0vjRxKTLu_lDr7a_VEAp60h_PA/exec';
         
-        let mockSiswa = [
-            ["111", "Andi", "Jakarta, 1 Jan 2008", "Bapak Andi", "08111", "Jl. A", "X", "X MIPA 1", "Bu Ani", "Pak Budi"],
-            ["222", "Budi Santoso", "Bogor, 2 Feb 2008", "Bapak Budi", "08222", "Jl. B", "X", "X MIPA 1", "Bu Ani", "Pak Budi"],
-            ["333", "Cici", "Depok, 3 Mar 2007", "Bapak Cici", "08333", "Jl. C", "XI", "XI IPS 2", "Pak Dedi", "Bu Euis"],
-            ["444", "Ahmad Fauzi", "Tangerang, 10 Sep 2007", "Bapak Fauzi", "08444", "Jl. D", "XI", "XI IPS 2", "Pak Dedi", "Bu Euis"]
-        ];
-        
-        // Mock data untuk mode preview
-        let allAbsensiData = [
-            [new Date().toString(), "222", "Budi Santoso", "X MIPA 1", "Alfa", "Bolos"],
-            [new Date().toString(), "222", "Budi Santoso", "X MIPA 1", "Alfa", "Bolos"],
-            [new Date().toString(), "222", "Budi Santoso", "X MIPA 1", "Alfa", "Bolos"],
-            [new Date().toString(), "444", "Ahmad Fauzi", "XI IPS 2", "Sakit", "Demam"],
-            [new Date().toString(), "444", "Ahmad Fauzi", "XI IPS 2", "Sakit", "Demam"],
-            [new Date().toString(), "444", "Ahmad Fauzi", "XI IPS 2", "Sakit", "Demam"],
-            [new Date().toString(), "444", "Ahmad Fauzi", "XI IPS 2", "Sakit", "Demam"],
-            [new Date().toString(), "444", "Ahmad Fauzi", "XI IPS 2", "Sakit", "Demam"],
-            [new Date().toString(), "444", "Ahmad Fauzi", "XI IPS 2", "Sakit", "Demam"],
-            [new Date().toString(), "444", "Ahmad Fauzi", "XI IPS 2", "Sakit", "Demam"],
-            [new Date().toString(), "111", "Andi", "X MIPA 1", "Hadir", "-"],
-            [new Date().toString(), "333", "Cici", "XI IPS 2", "Izin", "Acara Keluarga"]
-        ];
-        let allTelatData = [
-            [new Date().toString(), "333", "Cici", "XI IPS 2", "07:30", "Macet"],
-            [new Date().toString(), "333", "Cici", "XI IPS 2", "07:45", "Kesiangan"],
-            [new Date().toString(), "333", "Cici", "XI IPS 2", "07:20", "Ban Bocor"],
-            [new Date().toString(), "333", "Cici", "XI IPS 2", "08:00", "Bangun Telat"],
-            [new Date().toString(), "111", "Andi", "X MIPA 1", "07:10", "Hujan"]
-        ];
-        let allKmobData = [
-            ["111", "Andi", "X MIPA 1", new Date().toLocaleDateString('id-ID'), "Masuk & Pulang", "06:20 - 15:10", "Tepat Waktu", "-6.42345", "106.73234"],
-            ["222", "Budi Santoso", "X MIPA 1", new Date().toLocaleDateString('id-ID'), "Hanya Pulang", "--:-- - 15:30", "Terlambat (Tidak absen masuk)", "-6.42350", "106.73200"],
-            ["333", "Cici", "XI IPS 2", new Date().toLocaleDateString('id-ID'), "Hanya Masuk", "12:45 - --:--", "Bolos & Terlambat (12:45)", "-6.42310", "106.73290"]
-        ];
-        let allKasusData = [];
-        let allTindakanData = [];
         let windowDataKmobFiltered = []; // Variabel global untuk menyimpan data KMOB terfilter
 
+        // FUNGSI UTAMA UNTUK MENGIRIM PERMINTAAN KE GOOGLE SCRIPT (MENGGUNAKAN FETCH API)
         function runBackend(funcName, args, callback) {
-            if (!IS_DEV) {
-                let runner = google.script.run.withSuccessHandler(callback).withFailureHandler(err => {
-                    console.error(err);
+            fetch(API_URL, {
+                method: 'POST',
+                // Catatan: Header Content-Type sengaja TIDAK diset ke 'application/json' 
+                // untuk menghindari masalah CORS Preflight (OPTIONS request) pada Google Apps Script.
+                // Payload dikirim sebagai text/plain dan akan di-parse (JSON.parse) di backend (Code.gs).
+                body: JSON.stringify({ action: funcName, args: args })
+            })
+            .then(response => response.json())
+            .then(resData => {
+                if (resData.status === 'success') {
+                    callback(resData.data);
+                } else {
+                    console.error("Backend Error:", resData.message);
                     setLoading(false);
-                    showToast("Terjadi kesalahan server!", false);
-                });
-                if(args.length === 0) runner[funcName]();
-                else if(args.length === 1) runner[funcName](args[0]);
-                else if(args.length === 2) runner[funcName](args[0], args[1]);
-            } else {
-                setTimeout(() => {
-                    if (funcName === 'verifyLogin') {
-                        if (args[0] === 'admin' && args[1] === 'admin123') callback({ success: true, name: 'Admin Simulasi', role: 'Super Admin' });
-                        else callback({ success: false, message: 'Username atau password salah!' });
-                    } else if (funcName === 'getMasterData') {
-                        callback({ guruBK: ["Pak Mamat (BK)", "Bu Rina (BK)"], staff: {"Waka Kesiswaan": "Pak Bambang", "Kepala Sekolah": "Drs. H. Sugeng"} });
-                    } else if (funcName === 'getDetailSiswa') {
-                        let find = mockSiswa.find(s => s[0] === args[0] || s[1].toLowerCase() === args[0].toLowerCase());
-                        if(find) callback({nisn: find[0], nama: find[1], ttl: find[2], namaOrtu: find[3], hpOrtu: find[4], alamat: find[5], tingkat: find[6], kelas: find[7], waliKelas: find[8], guruWali: find[9]});
-                        else callback(null);
-                    } else if (funcName === 'simpanDataKasus') {
-                        allKasusData.unshift([args[0].tanggal, args[0].nisn, args[0].namaSiswa, args[0].kelas, args[0].tanggal, args[0].guruBK, args[0].jenisPelanggaran, args[0].permasalahan, args[0].tindakLanjut, args[0].penyelesai, args[0].keterangan, "dummy.pdf"]);
-                        callback({success: true, message: "Berhasil disimpan (Mode Simulasi)"});
-                    } else if (funcName === 'getRiwayatKasus') callback(allKasusData);
-                    else if (funcName === 'getRekapAbsensi') callback({ details: allAbsensiData });
-                    else if (funcName === 'getRekapKeterlambatan') callback(allTelatData);
-                    else if (funcName === 'getDataTindakan') callback(allTindakanData);
-                    else if (funcName === 'getRekapKmob') callback(allKmobData);
-                    else if (funcName === 'simpanTindakan') {
-                        allTindakanData.push([new Date().toString(), args[0].nisn, args[0].kategori, args[0].jumlah]);
-                        callback({ success: true });
-                    }
-                }, 800);
-            }
+                    showToast("Error dari server: " + resData.message, false);
+                }
+            })
+            .catch(err => {
+                console.error("Fetch Error:", err);
+                setLoading(false);
+                showToast("Terjadi kesalahan koneksi jaringan!", false);
+            });
         }
 
         function prosesLogin(e) {
