@@ -460,7 +460,7 @@
                             <option value="Terlambat">Terlambat</option>
                             <option value="Bolos">Bolos</option>
                         </select>
-                        <button onclick="loadDataKmob()" class="p-2 bg-white border border-gray-300 rounded-xl hover:bg-gray-50 text-gray-600"><i class="fas fa-sync-alt"></i></button>
+                        <button id="btnRefreshKmob" onclick="refreshKmobManual()" class="p-2 bg-white border border-gray-300 rounded-xl hover:bg-gray-50 text-gray-600 smooth-transition" title="Refresh Data (Otomatis tiap 1 menit)"><i class="fas fa-sync-alt"></i></button>
                     </div>
                 </div>
 
@@ -517,13 +517,17 @@
         // FUNGSI UTAMA UNTUK MENGIRIM PERMINTAAN KE GOOGLE SCRIPT (MENGGUNAKAN FETCH API)
         function runBackend(funcName, args, callback) {
             fetch(API_URL, {
+                redirect: "follow", // WAJIB untuk menangani redirect dari server Google
                 method: 'POST',
-                // Catatan: Header Content-Type sengaja TIDAK diset ke 'application/json' 
-                // untuk menghindari masalah CORS Preflight (OPTIONS request) pada Google Apps Script.
-                // Payload dikirim sebagai text/plain dan akan di-parse (JSON.parse) di backend (Code.gs).
+                headers: {
+                    "Content-Type": "text/plain;charset=utf-8", // Menghindari isu CORS (Cross-Origin)
+                },
                 body: JSON.stringify({ action: funcName, args: args })
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) throw new Error("HTTP error " + response.status);
+                return response.json();
+            })
             .then(resData => {
                 if (resData.status === 'success') {
                     callback(resData.data);
@@ -536,7 +540,12 @@
             .catch(err => {
                 console.error("Fetch Error:", err);
                 setLoading(false);
-                showToast("Terjadi kesalahan koneksi jaringan!", false);
+                // Memberi pesan error yang lebih spesifik jika terjadi masalah CORS
+                if (err.message.includes("Failed to fetch") || err.name === "TypeError") {
+                    showToast("Koneksi Ditolak! Pastikan akses Apps Script di-set ke 'Siapa saja' (Anyone).", false);
+                } else {
+                    showToast("Terjadi kesalahan koneksi jaringan!", false);
+                }
             });
         }
 
@@ -986,10 +995,19 @@
         }
 
         let rawDataKmob = [];
-        function loadDataKmob() {
-            setLoading(true);
+        
+        function loadDataKmob(isAuto = false) {
+            // Jika dipanggil otomatis (isAuto = true), jangan tampilkan layar loading hitam penuh
+            if (!isAuto) setLoading(true, "Memuat data KMOB...");
+            
+            // Putar ikon refresh agar user tahu data sedang diperbarui
+            let btnIcon = document.querySelector('#btnRefreshKmob i');
+            if (btnIcon) btnIcon.classList.add('fa-spin');
+
             runBackend('getRekapKmob', [], function(res) {
-                setLoading(false);
+                if (!isAuto) setLoading(false);
+                if (btnIcon) btnIcon.classList.remove('fa-spin');
+
                 rawDataKmob = res || [];
                 let kSet = new Set(); rawDataKmob.forEach(r => { if(r[2]) kSet.add(r[2]); });
                 let sel = document.getElementById('filterKelasKmob'); let cVal = sel.value;
@@ -999,6 +1017,22 @@
                 applyFilterKmob();
             });
         }
+
+        function refreshKmobManual() {
+            loadDataKmob(false);
+        }
+
+        // TIMER AUTO-REFRESH: Berjalan di latar belakang setiap 60.000 ms (1 menit)
+        setInterval(() => {
+            let mainApp = document.getElementById('mainApp');
+            let tabKmob = document.getElementById('tab-kmob');
+            
+            // Tarik data hanya jika user sudah login DAN sedang membuka tab KMOB
+            if (mainApp && !mainApp.classList.contains('hidden') && tabKmob && tabKmob.classList.contains('bg-indigo-800')) {
+                console.log("Auto-refreshing KMOB data...");
+                loadDataKmob(true); // Memanggil secara diam-diam (tanpa overlay loading)
+            }
+        }, 60000);
 
         function applyFilterKmob() {
             let fKelas = document.getElementById('filterKelasKmob').value;
