@@ -53,7 +53,7 @@
                 </button>
             </form>
             <div class="mt-6 p-3 bg-blue-50 border border-blue-100 rounded-lg text-xs text-blue-800 text-center">
-                <i class="fas fa-shield-alt"></i> Terhubung langsung ke Database SMAN 1 Parung
+                <i class="fas fa-info-circle"></i> Gunakan Username <b>admin</b> dan Password <b>admin123</b>
             </div>
         </div>
     </div>
@@ -76,8 +76,8 @@
                 <!-- Profile / Logout -->
                 <div class="flex items-center gap-4">
                     <div class="hidden sm:block text-right">
-                        <p class="text-sm font-bold leading-tight" id="userNameDisplay">Guru BK</p>
-                        <p class="text-xs text-indigo-200">Akses Sistem Aktif</p>
+                        <p class="text-sm font-bold leading-tight" id="userNameDisplay">Admin</p>
+                        <p class="text-xs text-indigo-200">Guru BK</p>
                     </div>
                     <button onclick="prosesLogout()" class="p-2 bg-indigo-800 hover:bg-red-500 rounded-lg text-white smooth-transition shadow-sm" title="Keluar">
                         <i class="fas fa-sign-out-alt"></i>
@@ -540,7 +540,6 @@
             .catch(err => {
                 console.error("Fetch Error:", err);
                 setLoading(false);
-                // Memberi pesan error yang lebih spesifik jika terjadi masalah CORS
                 if (err.message.includes("Failed to fetch") || err.name === "TypeError") {
                     showToast("Koneksi Ditolak! Pastikan akses Apps Script di-set ke 'Siapa saja' (Anyone).", false);
                 } else {
@@ -997,10 +996,8 @@
         let rawDataKmob = [];
         
         function loadDataKmob(isAuto = false) {
-            // Jika dipanggil otomatis (isAuto = true), jangan tampilkan layar loading hitam penuh
             if (!isAuto) setLoading(true, "Memuat data KMOB...");
             
-            // Putar ikon refresh agar user tahu data sedang diperbarui
             let btnIcon = document.querySelector('#btnRefreshKmob i');
             if (btnIcon) btnIcon.classList.add('fa-spin');
 
@@ -1022,15 +1019,12 @@
             loadDataKmob(false);
         }
 
-        // TIMER AUTO-REFRESH: Berjalan di latar belakang setiap 60.000 ms (1 menit)
+        // Timer Auto Refresh tiap 60 detik secara diam-diam
         setInterval(() => {
             let mainApp = document.getElementById('mainApp');
             let tabKmob = document.getElementById('tab-kmob');
-            
-            // Tarik data hanya jika user sudah login DAN sedang membuka tab KMOB
             if (mainApp && !mainApp.classList.contains('hidden') && tabKmob && tabKmob.classList.contains('bg-indigo-800')) {
-                console.log("Auto-refreshing KMOB data...");
-                loadDataKmob(true); // Memanggil secara diam-diam (tanpa overlay loading)
+                loadDataKmob(true);
             }
         }, 60000);
 
@@ -1040,17 +1034,15 @@
             
             let count = {total: 0, tepat: 0, telat: 0, bolos: 0}; 
             let tbodyD = "";
-            windowDataKmobFiltered = []; // Reset global dataKmobFiltered
+            windowDataKmobFiltered = []; 
             
             rawDataKmob.forEach(r => {
                 let delayValStr = r[6] || "";
                 
-                // Menentukan Kategori Status
                 let statusKat = "Tepat Waktu";
                 if (delayValStr.includes("Bolos")) statusKat = "Bolos";
                 else if (delayValStr.includes("Terlambat")) statusKat = "Terlambat";
 
-                // Pengecekan Filter
                 let matchKelas = (fKelas === "Semua" || r[2] === fKelas);
                 let matchStatus = (fStatus === "Semua" || statusKat === fStatus);
 
@@ -1060,7 +1052,6 @@
                     else if (statusKat === "Terlambat") count.telat++;
                     else if (statusKat === "Bolos") count.bolos++;
 
-                    // Simpan data untuk Modal
                     windowDataKmobFiltered.push({
                         nisn: r[0], nama: r[1], kelas: r[2], jam: r[5], status: statusKat
                     });
@@ -1099,17 +1090,14 @@
                 }
             });
             
-            // Update Card Angka
             document.getElementById('totalKmob').innerText = count.total;
             document.getElementById('rekapKmobTepat').innerText = count.tepat;
             document.getElementById('rekapKmobTelat').innerText = count.telat;
             document.getElementById('rekapKmobBolos').innerText = count.bolos;
             
-            // Update Tabel
             document.getElementById('tabelKmob').innerHTML = tbodyD || "<tr><td colspan='8' class='p-4 text-center text-gray-400'>Tidak ada data absensi KMOB.</td></tr>";
         }
 
-        // Tampilkan Data Detail Pada Modal KMOB
         function showDetailKmob(kategori) {
             let filteredList = windowDataKmobFiltered;
             if (kategori !== 'Total') {
