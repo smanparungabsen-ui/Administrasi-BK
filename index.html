@@ -73,8 +73,14 @@
                         <p class="text-xs text-indigo-200">SMAN 1 Parung</p>
                     </div>
                 </div>
-                <!-- Profile / Logout -->
+                <!-- Profile / Logout / Clock -->
                 <div class="flex items-center gap-4">
+                    <!-- Live Clock Header -->
+                    <div class="hidden lg:block text-right border-r border-indigo-500 pr-4 mr-2">
+                        <p class="text-sm font-bold text-white tracking-wide" id="liveDateHeader">Memuat tanggal...</p>
+                        <p class="text-xs font-medium text-indigo-200 font-mono" id="liveTimeHeader">--:--:--</p>
+                    </div>
+                    
                     <div class="hidden sm:block text-right">
                         <p class="text-sm font-bold leading-tight" id="userNameDisplay">Admin</p>
                         <p class="text-xs text-indigo-200">Guru BK</p>
@@ -164,18 +170,24 @@
             
             <!-- ==================== TAB 0: DASHBOARD ==================== -->
             <section id="view-dashboard" class="tab-content block">
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-6 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
                     <div>
                         <h2 class="text-2xl font-bold text-gray-800">Sistem Deteksi Dini</h2>
-                        <p class="text-sm text-gray-500">Menampilkan peringatan pelanggaran absensi & keterlambatan.</p>
+                        <p class="text-sm text-gray-500 mt-1">Siswa yang melampaui batas wajar absensi dan keterlambatan.</p>
+                        <div class="flex flex-wrap items-center gap-2 mt-3">
+                            <i class="fas fa-calendar-alt text-gray-400"></i>
+                            <select id="filterBulanDashboard" onchange="applyDashboardFilter()" class="pl-3 pr-8 py-1.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 text-sm font-semibold text-gray-700 bg-gray-50 shadow-sm">
+                                <!-- Opsi bulan akan diisi otomatis melalui Javascript -->
+                                <option value="Semua">Semua Waktu</option>
+                            </select>
+                            <button onclick="loadDashboard()" class="px-3 py-1.5 bg-gray-50 border border-gray-300 rounded-lg hover:bg-gray-100 text-gray-600 text-sm shadow-sm smooth-transition flex items-center gap-1">
+                                <i class="fas fa-sync-alt"></i> Segarkan
+                            </button>
+                        </div>
                     </div>
-                    <div class="flex items-center gap-2">
-                        <i class="fas fa-calendar-alt text-gray-400"></i>
-                        <select id="filterBulanDashboard" onchange="applyDashboardFilter()" class="pl-3 pr-8 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 font-semibold text-gray-700 bg-white shadow-sm">
-                            <!-- Opsi bulan akan diisi otomatis melalui Javascript -->
-                            <option value="Semua">Semua Waktu</option>
-                        </select>
-                        <button onclick="loadDashboard()" class="p-2 bg-white border border-gray-300 rounded-xl hover:bg-gray-50 text-gray-600 shadow-sm" title="Refresh Dashboard"><i class="fas fa-sync-alt"></i></button>
+                    <div class="text-left lg:text-right bg-indigo-50 px-5 py-3 rounded-xl border border-indigo-100 w-full lg:w-auto flex flex-row lg:flex-col justify-between lg:justify-center items-center lg:items-end">
+                        <p class="text-sm font-bold text-indigo-800" id="liveDateDash">Memuat tanggal...</p>
+                        <p class="text-2xl font-black text-indigo-600 font-mono tracking-tight" id="liveTimeDash">--:--:--</p>
                     </div>
                 </div>
 
@@ -519,35 +531,66 @@
 
     <!-- ==================== SCRIPT JAVASCRIPT ==================== -->
     <script>
-        // MASUKKAN URL GOOGLE SCRIPT MU DI SINI (JIKA DI DEPLOY KE VERCEL)
+        // FUNGSI UPDATE JAM & TANGGAL REALTIME
+        function updateLiveClock() {
+            const now = new Date();
+            const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Ags', 'Sep', 'Okt', 'Nov', 'Des'];
+            
+            const dayName = days[now.getDay()];
+            const day = now.getDate();
+            const month = months[now.getMonth()];
+            const year = now.getFullYear();
+            
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+
+            const dateStr = `${dayName}, ${day} ${month} ${year}`;
+            const timeStr = `${hours}:${minutes}:${seconds} WIB`;
+
+            const elDateHeader = document.getElementById('liveDateHeader');
+            const elTimeHeader = document.getElementById('liveTimeHeader');
+            const elDateDash = document.getElementById('liveDateDash');
+            const elTimeDash = document.getElementById('liveTimeDash');
+
+            if(elDateHeader) elDateHeader.innerText = dateStr;
+            if(elTimeHeader) elTimeHeader.innerText = timeStr;
+            if(elDateDash) elDateDash.innerText = dateStr;
+            if(elTimeDash) elTimeDash.innerText = timeStr;
+        }
+
+        setInterval(updateLiveClock, 1000);
+        updateLiveClock();
+
+        // -------------------------------------------------------------
+        // MASUKKAN URL GOOGLE SCRIPT MU DI SINI
         const API_URL = 'https://script.google.com/macros/s/AKfycbwKzKuSUov87FM_qgWriQAAJfj7CPA5MFQN3_fbsMGL0vjRxKTLu_lDr7a_VEAp60h_PA/exec';
         
-        // Mode development khusus canvas agar bisa dites tanpa terhubung Vercel asli
-        const IS_DEV = typeof google === 'undefined' && window.location.hostname !== "localhost" && window.location.hostname === "";
         let windowDataKmobFiltered = []; 
         let rawDashboardAbsen = [];
         let rawDashboardTelat = [];
         let rawDashboardTindak = [];
 
+        // HANYA UNTUK PREVIEW (CANVAS). JIKA DI VERCEL, IS_DEV HARUS FALSE.
+        const IS_DEV = typeof google === 'undefined' && window.location.hostname === "";
+
         function runBackend(funcName, args, callback) {
             if (IS_DEV) {
                 // MOCK DATA UNTUK MODE CANVAS PREVIEW
                 setTimeout(() => {
-                    let mockDate = new Date();
-                    let mockDateStr = mockDate.toLocaleString('id-ID');
-                    let mockYMD = mockDate.getFullYear() + "-" + String(mockDate.getMonth()+1).padStart(2,'0') + "-" + String(mockDate.getDate()).padStart(2,'0');
+                    let mockYMD = new Date().getFullYear() + "-" + String(new Date().getMonth()+1).padStart(2,'0') + "-" + String(new Date().getDate()).padStart(2,'0');
 
                     if (funcName === 'verifyLogin') {
                         if (args[0] === 'admin' && args[1] === 'admin123') callback({ success: true, name: 'Admin (Preview)', role: 'Super Admin' });
-                        else callback({ success: false, message: 'Username atau password salah!' });
+                        else callback({ success: false, message: 'Username/password salah' });
                     } else if (funcName === 'getMasterData') {
                         callback({ guruBK: ["Pak Mamat", "Bu Rina"], staff: {"Waka Kesiswaan": "Pak Bambang", "Kepala Sekolah": "Drs. Sugeng"} });
                     } else if (funcName === 'getDetailSiswa') {
                         if(args[0].includes("Budi")) callback({nisn: "222", nama: "Budi Santoso", ttl: "Bogor, 2 Feb 2008", namaOrtu: "Bapak Budi", hpOrtu: "08222", alamat: "Jl. B", tingkat: "X", kelas: "X MIPA 1", waliKelas: "Bu Ani", guruWali: "Pak Budi"});
                         else callback(null);
-                    } else if (funcName === 'simpanDataKasus') {
-                        callback({success: true, message: "Tersimpan (Preview)"});
-                    } else if (funcName === 'getRiwayatKasus') callback([]);
+                    } else if (funcName === 'simpanDataKasus') callback({success: true, message: "Tersimpan (Preview)"});
+                    else if (funcName === 'getRiwayatKasus') callback([]);
                     else if (funcName === 'getRekapAbsensi') {
                         callback({ details: [
                             [mockYMD, "222", "Budi Santoso", "X MIPA 1", "Alfa", "Bolos"],
@@ -561,8 +604,7 @@
                             [mockYMD, "333", "Cici", "XI IPS 2", "07:30", "Macet"],
                             [mockYMD, "333", "Cici", "XI IPS 2", "07:45", "Kesiangan"],
                             [mockYMD, "333", "Cici", "XI IPS 2", "07:20", "Ban Bocor"],
-                            [mockYMD, "333", "Cici", "XI IPS 2", "08:00", "Bangun Telat"],
-                            ["2026-07-20", "111", "Andi", "X MIPA 1", "07:10", "Hujan"]
+                            [mockYMD, "333", "Cici", "XI IPS 2", "08:00", "Bangun Telat"]
                         ]);
                     }
                     else if (funcName === 'getDataTindakan') callback([]);
@@ -625,7 +667,7 @@
                     showToast("Selamat datang, " + res.name + "!");
                     initializeApp();
                 } else {
-                    showToast(res ? res.message : "Username / Password Salah", false);
+                    showToast(res ? res.message : "Terjadi kesalahan koneksi", false);
                 }
             });
         }
@@ -816,7 +858,7 @@
                     <div class="col-span-full text-center py-10 bg-white rounded-2xl border border-gray-200 border-dashed">
                         <i class="fas fa-shield-check text-4xl text-green-400 mb-3"></i>
                         <h3 class="font-bold text-gray-600">Semua Aman</h3>
-                        <p class="text-sm text-gray-400">Belum ada siswa yang melampaui batas pelanggaran pada bulan ini.</p>
+                        <p class="text-sm text-gray-400">Belum ada siswa yang melampaui batas pelanggaran saat ini.</p>
                     </div>`;
             }
         }
@@ -1110,6 +1152,8 @@
             document.getElementById('tabelRekapSiswaTelat').innerHTML = tbodyR || "<tr><td colspan='5' class='p-4 text-center text-gray-400'>Belum ada rekap.</td></tr>";
         }
 
+        let rawDataKmob = [];
+        
         function loadDataKmob(isAuto = false) {
             if (!isAuto) setLoading(true, "Memuat data KMOB...");
             
@@ -1120,15 +1164,12 @@
                 if (!isAuto) setLoading(false);
                 if (btnIcon) btnIcon.classList.remove('fa-spin');
 
-                let rawDataKmob = res || [];
+                rawDataKmob = res || [];
                 let kSet = new Set(); rawDataKmob.forEach(r => { if(r[2]) kSet.add(r[2]); });
                 let sel = document.getElementById('filterKelasKmob'); let cVal = sel.value;
                 sel.innerHTML = '<option value="Semua">Semua Kelas</option>';
                 Array.from(kSet).sort().forEach(k => { let opt=document.createElement('option'); opt.value=k; opt.text=k; sel.add(opt); });
                 if(Array.from(kSet).includes(cVal)) sel.value = cVal;
-                
-                // Panggil filter dan simpan data original secara global
-                window.globalKmobData = rawDataKmob;
                 applyFilterKmob();
             });
         }
@@ -1146,7 +1187,6 @@
         }, 60000);
 
         function applyFilterKmob() {
-            let rawDataKmob = window.globalKmobData || [];
             let fKelas = document.getElementById('filterKelasKmob').value;
             let fStatus = document.getElementById('filterStatusKmob').value;
             
