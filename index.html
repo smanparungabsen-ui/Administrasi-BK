@@ -1,13 +1,19 @@
+---
+
+### 2. File Frontend (index.html)
+*Salin kode ini dan timpa pada repositori GitHub Anda.*
+
+```html:index.html
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>E-Konseling SMAN 1 Parung</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="[https://cdn.tailwindcss.com](https://cdn.tailwindcss.com)"></script>
+    <link href="[https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css](https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css)" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        @import url('[https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap](https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap)');
         body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
         .smooth-transition { transition: all 0.3s ease; }
         .glassmorphism { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
@@ -52,9 +58,6 @@
                     <i class="fas fa-arrow-right" id="btnLoginIcon"></i>
                 </button>
             </form>
-            <div class="mt-6 p-3 bg-blue-50 border border-blue-100 rounded-lg text-xs text-blue-800 text-center">
-                <i class="fas fa-info-circle"></i> Gunakan Username <b>admin</b> dan Password <b>admin123</b>
-            </div>
         </div>
     </div>
 
@@ -175,12 +178,20 @@
                         <h2 class="text-2xl font-bold text-gray-800">Sistem Deteksi Dini</h2>
                         <p class="text-sm text-gray-500 mt-1">Siswa yang melampaui batas wajar absensi (Alfa/Sakit/Izin) dan keterlambatan.</p>
                         <div class="flex flex-wrap items-center gap-2 mt-3">
-                            <i class="fas fa-calendar-alt text-gray-400"></i>
-                            <select id="filterBulanDashboard" onchange="applyDashboardFilter()" class="pl-3 pr-8 py-1.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 text-sm font-semibold text-gray-700 bg-gray-50 shadow-sm">
-                                <!-- Opsi bulan akan diisi otomatis melalui Javascript -->
-                                <option value="Semua">Semua Waktu</option>
-                            </select>
-                            <button onclick="loadDashboard()" class="px-3 py-1.5 bg-gray-50 border border-gray-300 rounded-lg hover:bg-gray-100 text-gray-600 text-sm shadow-sm smooth-transition flex items-center gap-1">
+                            <div class="flex items-center bg-gray-50 border border-gray-300 rounded-lg px-3 py-1.5 shadow-sm">
+                                <i class="fas fa-calendar-alt text-gray-400 mr-2"></i>
+                                <select id="filterBulanDashboard" onchange="applyDashboardFilter()" class="bg-transparent focus:outline-none text-sm font-semibold text-gray-700 w-32">
+                                    <option value="Semua">Semua Waktu</option>
+                                </select>
+                            </div>
+                            <!-- FITUR BARU: FILTER KELAS DI DASHBOARD -->
+                            <div class="flex items-center bg-gray-50 border border-gray-300 rounded-lg px-3 py-1.5 shadow-sm">
+                                <i class="fas fa-filter text-gray-400 mr-2"></i>
+                                <select id="filterKelasDashboard" onchange="applyDashboardFilter()" class="bg-transparent focus:outline-none text-sm font-semibold text-gray-700 w-32">
+                                    <option value="Semua">Semua Kelas</option>
+                                </select>
+                            </div>
+                            <button onclick="loadDashboard()" class="px-3 py-1.5 bg-indigo-50 border border-indigo-200 rounded-lg hover:bg-indigo-100 text-indigo-700 text-sm font-semibold shadow-sm smooth-transition flex items-center gap-1">
                                 <i class="fas fa-sync-alt"></i> Segarkan
                             </button>
                         </div>
@@ -344,7 +355,7 @@
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
                     <div>
                         <h2 class="text-2xl font-bold text-gray-800"><i class="fas fa-calendar-check text-indigo-500 mr-2"></i> Rekapitulasi Absensi</h2>
-                        <p class="text-sm text-gray-500">Monitoring kehadiran harian siswa dari Sheet DataAbsensi.</p>
+                        <p class="text-sm text-gray-500">Monitoring kehadiran harian siswa.</p>
                     </div>
                     <div class="flex items-center gap-2">
                         <i class="fas fa-filter text-gray-400"></i>
@@ -564,19 +575,17 @@
         setInterval(updateLiveClock, 1000);
         updateLiveClock();
 
-        // MASUKKAN URL GOOGLE SCRIPT MU DI SINI (Digunakan saat Deploy ke Vercel/Github)
-        const API_URL = 'https://script.google.com/macros/s/AKfycbwKzKuSUov87FM_qgWriQAAJfj7CPA5MFQN3_fbsMGL0vjRxKTLu_lDr7a_VEAp60h_PA/exec';
+        // MASUKKAN URL GOOGLE SCRIPT MU DI SINI
+        const API_URL = '[https://script.google.com/macros/s/AKfycbwKzKuSUov87FM_qgWriQAAJfj7CPA5MFQN3_fbsMGL0vjRxKTLu_lDr7a_VEAp60h_PA/exec](https://script.google.com/macros/s/AKfycbwKzKuSUov87FM_qgWriQAAJfj7CPA5MFQN3_fbsMGL0vjRxKTLu_lDr7a_VEAp60h_PA/exec)';
         
         let windowDataKmobFiltered = []; 
         let rawDashboardAbsen = [];
         let rawDashboardTelat = [];
         let rawDashboardTindak = [];
 
-        // FUNGSI PENGHUBUNG BACKEND
         function runBackend(funcName, args, callback) {
-            // Karena ini Canvas Preview, kita asumsikan menggunakan fetch ke url yang diberikan user
             fetch(API_URL, {
-                redirect: "follow", 
+                redirect: "follow",
                 method: 'POST',
                 headers: {
                     "Content-Type": "text/plain;charset=utf-8", 
@@ -600,9 +609,9 @@
                 console.error("Fetch Error:", err);
                 setLoading(false);
                 if (err.message.includes("Failed to fetch") || err.name === "TypeError") {
-                    showToast("Koneksi ditolak! Pastikan akses API diset ke 'Siapa saja'.", false);
+                    showToast("Koneksi Ditolak! Pastikan akses Apps Script di-set ke 'Siapa saja' (Anyone).", false);
                 } else {
-                    showToast("Terjadi kesalahan jaringan!", false);
+                    showToast("Terjadi kesalahan koneksi jaringan!", false);
                 }
             });
         }
@@ -696,7 +705,7 @@
             else document.getElementById('loadingOverlay').classList.add('hidden');
         }
 
-        // ======================= DASHBOARD LOGIC =======================
+        // ======================= DASHBOARD & SMART FILTER =======================
         function loadDashboard() {
             setLoading(true, "Menganalisis data harian...");
             runBackend('getRekapAbsensi', [], function(resAbsensi) {
@@ -708,30 +717,38 @@
                         rawDashboardTelat = resTelat || [];
                         rawDashboardTindak = resTindakan || [];
                         
-                        buildDashboardMonthFilter();
+                        buildDashboardFilters();
                         applyDashboardFilter();
                     });
                 });
             });
         }
 
-        function buildDashboardMonthFilter() {
+        function buildDashboardFilters() {
             let months = new Set();
-            rawDashboardAbsen.forEach(r => {
-                let d = new Date(r[0]);
-                if(!isNaN(d.getTime())) months.add(d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2, '0'));
-            });
-            rawDashboardTelat.forEach(r => {
-                let d = new Date(r[0]);
-                if(!isNaN(d.getTime())) months.add(d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2, '0'));
-            });
+            let classes = new Set();
+            
+            function tambahDataFilter(data) {
+                data.forEach(r => {
+                    if (!r[0]) return;
+                    let d = new Date(r[0]);
+                    if(!isNaN(d.getTime())) {
+                        months.add(d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2, '0'));
+                    }
+                    if(r[3]) classes.add(r[3].toString().trim());
+                });
+            }
+            
+            tambahDataFilter(rawDashboardAbsen);
+            tambahDataFilter(rawDashboardTelat);
 
-            let sel = document.getElementById('filterBulanDashboard');
-            let currentVal = sel.value;
-            sel.innerHTML = '<option value="Semua">Semua Waktu</option>';
+            // Filter Bulan
+            let selBulan = document.getElementById('filterBulanDashboard');
+            let currentValBulan = selBulan.value;
+            selBulan.innerHTML = '<option value="Semua">Semua Waktu</option>';
 
             let monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
-            let sortedMonths = Array.from(months).sort().reverse();
+            let sortedMonths = Array.from(months).sort().reverse(); 
             
             let now = new Date();
             let currentYM = now.getFullYear() + "-" + String(now.getMonth()+1).padStart(2, '0');
@@ -743,39 +760,55 @@
                 let opt = document.createElement('option');
                 opt.value = ym;
                 opt.text = text;
-                sel.add(opt);
+                selBulan.add(opt);
                 if(ym === currentYM) hasCurrent = true;
             });
 
-            if(currentVal && sortedMonths.includes(currentVal)) sel.value = currentVal;
-            else if (hasCurrent) sel.value = currentYM;
-            else if (sortedMonths.length > 0) sel.value = sortedMonths[0];
-            else sel.value = "Semua";
+            if(currentValBulan && sortedMonths.includes(currentValBulan)) selBulan.value = currentValBulan;
+            else if (hasCurrent) selBulan.value = currentYM;
+            else if (sortedMonths.length > 0) selBulan.value = sortedMonths[0];
+            else selBulan.value = "Semua";
+
+            // Filter Kelas
+            let selKelas = document.getElementById('filterKelasDashboard');
+            let currentValKelas = selKelas.value;
+            selKelas.innerHTML = '<option value="Semua">Semua Kelas</option>';
+            
+            Array.from(classes).sort().forEach(k => {
+                let opt = document.createElement('option');
+                opt.value = k;
+                opt.text = k;
+                selKelas.add(opt);
+            });
+            if(Array.from(classes).includes(currentValKelas)) selKelas.value = currentValKelas;
         }
 
         function applyDashboardFilter() {
-            let filterVal = document.getElementById('filterBulanDashboard').value;
+            let filterBulan = document.getElementById('filterBulanDashboard').value;
+            let filterKelas = document.getElementById('filterKelasDashboard').value;
 
-            let fAbsen = rawDashboardAbsen.filter(r => {
-                if(filterVal === "Semua") return true;
-                let d = new Date(r[0]);
-                if(isNaN(d.getTime())) return false;
-                return (d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2, '0')) === filterVal;
-            });
+            function filterData(data) {
+                return data.filter(r => {
+                    let matchBulan = true;
+                    if(filterBulan !== "Semua") {
+                        if(!r[0]) return false;
+                        let d = new Date(r[0]);
+                        if(isNaN(d.getTime())) return false;
+                        matchBulan = (d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2, '0')) === filterBulan;
+                    }
+                    
+                    let matchKelas = true;
+                    if(filterKelas !== "Semua") {
+                        matchKelas = (r[3] && r[3].toString().trim() === filterKelas);
+                    }
+                    
+                    return matchBulan && matchKelas;
+                });
+            }
 
-            let fTelat = rawDashboardTelat.filter(r => {
-                if(filterVal === "Semua") return true;
-                let d = new Date(r[0]);
-                if(isNaN(d.getTime())) return false;
-                return (d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2, '0')) === filterVal;
-            });
-
-            let fTindak = rawDashboardTindak.filter(r => {
-                if(filterVal === "Semua") return true;
-                let d = new Date(r[0]);
-                if(isNaN(d.getTime())) return false;
-                return (d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2, '0')) === filterVal;
-            });
+            let fAbsen = filterData(rawDashboardAbsen);
+            let fTelat = filterData(rawDashboardTelat);
+            let fTindak = filterData(rawDashboardTindak);
 
             prosesDataDashboard(fAbsen, fTelat, fTindak);
         }
@@ -783,22 +816,29 @@
         function prosesDataDashboard(dataAbsen, dataTelat, dataTindakan) {
             let rekapSiswa = {}; 
             
-            // Mengambil peringatan secara eksklusif dari DataAbsensi
             dataAbsen.forEach(r => {
-                // Indeks 1: NISN, Indeks 2: Nama, Indeks 4: Status Kehadiran
-                let nisn = r[1], nama = r[2], status = r[4] ? r[4].toLowerCase() : "";
-                if(!nisn) return;
-                if(!rekapSiswa[nisn]) rekapSiswa[nisn] = { nama: nama, alfa: 0, sakit: 0, izin: 0, telat: 0 };
+                let nisn = (r[1] || "").toString().trim();
+                let nama = (r[2] || "").toString().trim();
+                let kelas = (r[3] || "").toString().trim(); 
                 
-                if(status.includes('alfa')||status.includes('alpha')) rekapSiswa[nisn].alfa++;
-                else if(status.includes('sakit')) rekapSiswa[nisn].sakit++;
-                else if(status.includes('izin')||status.includes('ijin')) rekapSiswa[nisn].izin++;
+                let statusText = (r[4] || "").toString().toLowerCase().trim();
+                let ketText = (r[5] || "").toString().toLowerCase().trim();
+                let st = statusText ? statusText : ketText;
+                
+                if(!nisn) return;
+                if(!rekapSiswa[nisn]) rekapSiswa[nisn] = { nama: nama, kelas: kelas, alfa: 0, sakit: 0, izin: 0, telat: 0 };
+                
+                if(st === 'a' || st.includes('alfa') || st.includes('alpha')) rekapSiswa[nisn].alfa++;
+                else if(st === 's' || st.includes('sakit')) rekapSiswa[nisn].sakit++;
+                else if(st === 'i' || st.includes('izin') || st.includes('ijin')) rekapSiswa[nisn].izin++;
             });
 
             dataTelat.forEach(r => {
-                let nisn = r[1], nama = r[2];
+                let nisn = (r[1] || "").toString().trim();
+                let nama = (r[2] || "").toString().trim();
+                let kelas = (r[3] || "").toString().trim();
                 if(!nisn) return;
-                if(!rekapSiswa[nisn]) rekapSiswa[nisn] = { nama: nama, alfa: 0, sakit: 0, izin: 0, telat: 0 };
+                if(!rekapSiswa[nisn]) rekapSiswa[nisn] = { nama: nama, kelas: kelas, alfa: 0, sakit: 0, izin: 0, telat: 0 };
                 rekapSiswa[nisn].telat++;
             });
 
@@ -819,10 +859,10 @@
                 let s = rekapSiswa[nisn];
                 let tr = tracker[nisn] || {};
 
-                if (s.alfa >= BATAS.alfa && s.alfa > (tr['Alfa'] || 0)) { container.innerHTML += buatKartuAlert(nisn, s.nama, 'Alfa', s.alfa, 'red'); adaPeringatan = true; }
-                if (s.sakit >= BATAS.sakit && s.sakit > (tr['Sakit'] || 0)) { container.innerHTML += buatKartuAlert(nisn, s.nama, 'Sakit', s.sakit, 'yellow'); adaPeringatan = true; }
-                if (s.izin >= BATAS.izin && s.izin > (tr['Izin'] || 0)) { container.innerHTML += buatKartuAlert(nisn, s.nama, 'Izin', s.izin, 'blue'); adaPeringatan = true; }
-                if (s.telat >= BATAS.telat && s.telat > (tr['Terlambat'] || 0)) { container.innerHTML += buatKartuAlert(nisn, s.nama, 'Terlambat', s.telat, 'orange'); adaPeringatan = true; }
+                if (s.alfa >= BATAS.alfa && s.alfa > (tr['Alfa'] || 0)) { container.innerHTML += buatKartuAlert(nisn, s.nama, s.kelas, 'Alfa', s.alfa, 'red'); adaPeringatan = true; }
+                if (s.sakit >= BATAS.sakit && s.sakit > (tr['Sakit'] || 0)) { container.innerHTML += buatKartuAlert(nisn, s.nama, s.kelas, 'Sakit', s.sakit, 'yellow'); adaPeringatan = true; }
+                if (s.izin >= BATAS.izin && s.izin > (tr['Izin'] || 0)) { container.innerHTML += buatKartuAlert(nisn, s.nama, s.kelas, 'Izin', s.izin, 'blue'); adaPeringatan = true; }
+                if (s.telat >= BATAS.telat && s.telat > (tr['Terlambat'] || 0)) { container.innerHTML += buatKartuAlert(nisn, s.nama, s.kelas, 'Terlambat', s.telat, 'orange'); adaPeringatan = true; }
             }
 
             if (!adaPeringatan) {
@@ -830,12 +870,12 @@
                     <div class="col-span-full text-center py-10 bg-white rounded-2xl border border-gray-200 border-dashed">
                         <i class="fas fa-shield-check text-4xl text-green-400 mb-3"></i>
                         <h3 class="font-bold text-gray-600">Semua Aman</h3>
-                        <p class="text-sm text-gray-400">Belum ada siswa yang melampaui batas pelanggaran pada bulan ini.</p>
+                        <p class="text-sm text-gray-400">Belum ada siswa yang melampaui batas pelanggaran sesuai filter ini.</p>
                     </div>`;
             }
         }
 
-        function buatKartuAlert(nisn, nama, kategori, jumlah, color) {
+        function buatKartuAlert(nisn, nama, kelas, kategori, jumlah, color) {
             let bg = `bg-${color}-50`;
             let border = `border-${color}-200`;
             let iconColor = `text-${color}-500`;
@@ -851,6 +891,7 @@
                             <div>
                                 <p class="text-xs font-bold uppercase ${textColor} mb-0.5">${kategori}</p>
                                 <h4 class="font-bold text-gray-800 leading-tight">${nama}</h4>
+                                <p class="text-xs text-gray-500 font-medium mt-0.5"><i class="fas fa-layer-group text-gray-400"></i> Kelas: ${kelas}</p>
                             </div>
                         </div>
                         <p class="text-sm text-gray-600 mb-4 bg-white/60 p-2 rounded-lg">Telah mencapai <b>${jumlah} kali</b> catatan ${kategori.toLowerCase()}.</p>
@@ -1037,15 +1078,15 @@
                 setLoading(false);
                 if(res) {
                     let html = [...res].reverse().map(r => {
+                        let parsedDate = r[0] ? new Date(r[0]).toLocaleDateString('id-ID') : '-';
                         let doc = r[11] && r[11].startsWith("http") ? `<a href="${r[11]}" target="_blank" class="text-red-500 hover:text-red-700 text-xl"><i class="fas fa-file-pdf"></i></a>` : '-';
-                        return `<tr class="border-b hover:bg-gray-50"><td class="px-4 py-3 text-xs text-gray-500">${new Date(r[0]).toLocaleDateString('id-ID')}</td><td class="px-4 py-3"><div class="font-semibold">${r[2]||'-'}</div><div class="text-xs text-gray-500">${r[3]||'-'} | NISN: ${r[1]||'-'}</div></td><td class="px-4 py-3 text-sm">${r[5]||'-'}</td><td class="px-4 py-3"><span class="px-2 py-1 bg-red-100 text-red-800 rounded text-xs font-bold whitespace-nowrap">${r[6]||'-'}</span></td><td class="px-4 py-3 text-xs max-w-xs truncate" title="${r[7]||'-'}">${r[7]||'-'}</td><td class="px-4 py-3 text-xs max-w-xs truncate" title="${r[8]||'-'}">${r[8]||'-'}</td><td class="px-4 py-3 text-xs">${r[9]||'-'}</td><td class="px-4 py-3 text-center">${doc}</td></tr>`;
+                        return `<tr class="border-b hover:bg-gray-50"><td class="px-4 py-3 text-xs text-gray-500">${parsedDate}</td><td class="px-4 py-3"><div class="font-semibold">${r[2]||'-'}</div><div class="text-xs text-gray-500">${r[3]||'-'} | NISN: ${r[1]||'-'}</div></td><td class="px-4 py-3 text-sm">${r[5]||'-'}</td><td class="px-4 py-3"><span class="px-2 py-1 bg-red-100 text-red-800 rounded text-xs font-bold whitespace-nowrap">${r[6]||'-'}</span></td><td class="px-4 py-3 text-xs max-w-xs truncate" title="${r[7]||'-'}">${r[7]||'-'}</td><td class="px-4 py-3 text-xs max-w-xs truncate" title="${r[8]||'-'}">${r[8]||'-'}</td><td class="px-4 py-3 text-xs">${r[9]||'-'}</td><td class="px-4 py-3 text-center">${doc}</td></tr>`;
                     }).join("");
                     document.getElementById('tabelRiwayat').innerHTML = html || "<tr><td colspan='8' class='p-6 text-center text-gray-400'>Belum ada riwayat.</td></tr>";
                 }
             });
         }
 
-        // ======================= TAB ABSENSI =======================
         let rawDataAbsensi = [];
         function loadDataAbsensi() {
             setLoading(true);
@@ -1068,18 +1109,38 @@
             
             rev.forEach(r => {
                 if(f === "Semua" || r[3] === f) {
-                    let st = r[4] ? r[4].toLowerCase() : "";
-                    if(st.includes('hadir')) count.h++; else if(st.includes('sakit')) count.s++; else if(st.includes('izin')||st.includes('ijin')) count.i++; else if(st.includes('alfa')||st.includes('alpha')) count.a++; else if(st.includes('dispen')) count.d++;
+                    let statusText = (r[4] || "").toString().toLowerCase().trim();
+                    let ketText = (r[5] || "").toString().toLowerCase().trim();
+                    let st = statusText ? statusText : ketText; 
+                    
+                    if(st === 'h' || st.includes('hadir')) count.h++; 
+                    else if(st === 's' || st.includes('sakit')) count.s++; 
+                    else if(st === 'i' || st.includes('izin')||st.includes('ijin')) count.i++; 
+                    else if(st === 'a' || st.includes('alfa')||st.includes('alpha')) count.a++; 
+                    else if(st.includes('dispen')) count.d++;
                     
                     if (r[1] && r[2]) {
                         let k = r[1]+"|"+r[2]+"|"+r[3];
                         if(!sRekap[k]) sRekap[k] = {h:0,s:0,i:0,a:0,d:0};
-                        if(st.includes('hadir')) sRekap[k].h++; else if(st.includes('sakit')) sRekap[k].s++; else if(st.includes('izin')||st.includes('ijin')) sRekap[k].i++; else if(st.includes('alfa')||st.includes('alpha')) sRekap[k].a++; else if(st.includes('dispen')) sRekap[k].d++;
+                        
+                        if(st === 'h' || st.includes('hadir')) sRekap[k].h++; 
+                        else if(st === 's' || st.includes('sakit')) sRekap[k].s++; 
+                        else if(st === 'i' || st.includes('izin')||st.includes('ijin')) sRekap[k].i++; 
+                        else if(st === 'a' || st.includes('alfa')||st.includes('alpha')) sRekap[k].a++; 
+                        else if(st.includes('dispen')) sRekap[k].d++;
                     }
                     
                     let bg = "bg-gray-100 text-gray-800";
-                    if(st.includes('hadir')) bg="bg-green-100 text-green-800"; else if(st.includes('sakit')) bg="bg-yellow-100 text-yellow-800"; else if(st.includes('izin')||st.includes('ijin')) bg="bg-blue-100 text-blue-800"; else if(st.includes('alfa')||st.includes('alpha')) bg="bg-red-100 text-red-800"; else if(st.includes('dispen')) bg="bg-purple-100 text-purple-800";
-                    tbodyD += `<tr class="border-b hover:bg-gray-50"><td class="px-4 py-3 text-xs text-gray-500">${new Date(r[0]).toLocaleString('id-ID',{dateStyle:'short'})}</td><td class="px-4 py-3">${r[1]||'-'}</td><td class="px-4 py-3 font-medium">${r[2]||'-'}</td><td class="px-4 py-3">${r[3]||'-'}</td><td class="px-4 py-3 text-center"><span class="px-2 py-1 rounded text-xs font-bold ${bg}">${r[4]||'-'}</span></td><td class="px-4 py-3">${r[5]||'-'}</td></tr>`;
+                    let label = st ? st.toUpperCase() : '-';
+                    if(st === 'h' || st.includes('hadir')){ bg="bg-green-100 text-green-800"; label="HADIR"; } 
+                    else if(st === 's' || st.includes('sakit')){ bg="bg-yellow-100 text-yellow-800"; label="SAKIT"; } 
+                    else if(st === 'i' || st.includes('izin')||st.includes('ijin')){ bg="bg-blue-100 text-blue-800"; label="IZIN"; } 
+                    else if(st === 'a' || st.includes('alfa')||st.includes('alpha')){ bg="bg-red-100 text-red-800"; label="ALFA"; } 
+                    else if(st.includes('dispen')){ bg="bg-purple-100 text-purple-800"; label="DISPEN"; }
+                    
+                    let parsedDate = r[0] ? new Date(r[0]).toLocaleString('id-ID',{dateStyle:'short'}) : '-';
+
+                    tbodyD += `<tr class="border-b hover:bg-gray-50"><td class="px-4 py-3 text-xs text-gray-500">${parsedDate}</td><td class="px-4 py-3">${r[1]||'-'}</td><td class="px-4 py-3 font-medium">${r[2]||'-'}</td><td class="px-4 py-3">${r[3]||'-'}</td><td class="px-4 py-3 text-center"><span class="px-2 py-1 rounded text-xs font-bold ${bg}">${label}</span></td><td class="px-4 py-3">${r[5]||'-'}</td></tr>`;
                 }
             });
             document.getElementById('rekapHadir').innerText = count.h; document.getElementById('rekapSakit').innerText = count.s; document.getElementById('rekapIzin').innerText = count.i; document.getElementById('rekapAlfa').innerText = count.a; document.getElementById('rekapDispen').innerText = count.d;
@@ -1114,7 +1175,8 @@
                 if(f === "Semua" || r[3] === f) {
                     total++;
                     if(r[1] && r[2]) { let k = r[1]+"|"+r[2]+"|"+r[3]; sRekap[k] = (sRekap[k]||0)+1; }
-                    tbodyD += `<tr class="border-b hover:bg-orange-50"><td class="px-4 py-3 text-xs text-gray-500">${new Date(r[0]).toLocaleString('id-ID',{dateStyle:'short'})}</td><td class="px-4 py-3">${r[1]||'-'}</td><td class="px-4 py-3 font-medium">${r[2]||'-'}</td><td class="px-4 py-3">${r[3]||'-'}</td><td class="px-4 py-3 text-orange-600 font-bold">${r[4]||'-'}</td><td class="px-4 py-3">${r[5]||'-'}</td></tr>`;
+                    let parsedDate = r[0] ? new Date(r[0]).toLocaleString('id-ID',{dateStyle:'short'}) : '-';
+                    tbodyD += `<tr class="border-b hover:bg-orange-50"><td class="px-4 py-3 text-xs text-gray-500">${parsedDate}</td><td class="px-4 py-3">${r[1]||'-'}</td><td class="px-4 py-3 font-medium">${r[2]||'-'}</td><td class="px-4 py-3">${r[3]||'-'}</td><td class="px-4 py-3 text-orange-600 font-bold">${r[4]||'-'}</td><td class="px-4 py-3">${r[5]||'-'}</td></tr>`;
                 }
             });
             document.getElementById('totalTelat').innerText = total;
@@ -1192,7 +1254,7 @@
                     
                     let mapLink = '-';
                     if (lat && lng) {
-                        mapLink = `<a href="https://www.google.com/maps?q=${lat},${lng}" target="_blank" class="px-3 py-1 bg-indigo-100 text-indigo-700 hover:bg-indigo-600 hover:text-white rounded text-xs font-bold smooth-transition whitespace-nowrap"><i class="fas fa-map-marker-alt"></i> Peta</a>`;
+                        mapLink = `<a href="[https://www.google.com/maps?q=$](https://www.google.com/maps?q=$){lat},${lng}" target="_blank" class="px-3 py-1 bg-indigo-100 text-indigo-700 hover:bg-indigo-600 hover:text-white rounded text-xs font-bold smooth-transition whitespace-nowrap"><i class="fas fa-map-marker-alt"></i> Peta</a>`;
                     }
                     
                     let typeBadge = "bg-gray-100 text-gray-800";
