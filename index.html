@@ -1,19 +1,13 @@
----
-
-### 2. File Frontend (index.html)
-*Salin kode ini dan timpa pada repositori GitHub Anda.*
-
-```html:index.html
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>E-Konseling SMAN 1 Parung</title>
-    <script src="[https://cdn.tailwindcss.com](https://cdn.tailwindcss.com)"></script>
-    <link href="[https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css](https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css)" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        @import url('[https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap](https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap)');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
         .smooth-transition { transition: all 0.3s ease; }
         .glassmorphism { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
@@ -184,7 +178,6 @@
                                     <option value="Semua">Semua Waktu</option>
                                 </select>
                             </div>
-                            <!-- FITUR BARU: FILTER KELAS DI DASHBOARD -->
                             <div class="flex items-center bg-gray-50 border border-gray-300 rounded-lg px-3 py-1.5 shadow-sm">
                                 <i class="fas fa-filter text-gray-400 mr-2"></i>
                                 <select id="filterKelasDashboard" onchange="applyDashboardFilter()" class="bg-transparent focus:outline-none text-sm font-semibold text-gray-700 w-32">
@@ -576,7 +569,7 @@
         updateLiveClock();
 
         // MASUKKAN URL GOOGLE SCRIPT MU DI SINI
-        const API_URL = '[https://script.google.com/macros/s/AKfycbwKzKuSUov87FM_qgWriQAAJfj7CPA5MFQN3_fbsMGL0vjRxKTLu_lDr7a_VEAp60h_PA/exec](https://script.google.com/macros/s/AKfycbwKzKuSUov87FM_qgWriQAAJfj7CPA5MFQN3_fbsMGL0vjRxKTLu_lDr7a_VEAp60h_PA/exec)';
+        const API_URL = 'https://script.google.com/macros/s/AKfycbwKzKuSUov87FM_qgWriQAAJfj7CPA5MFQN3_fbsMGL0vjRxKTLu_lDr7a_VEAp60h_PA/exec';
         
         let windowDataKmobFiltered = []; 
         let rawDashboardAbsen = [];
@@ -1254,7 +1247,7 @@
                     
                     let mapLink = '-';
                     if (lat && lng) {
-                        mapLink = `<a href="[https://www.google.com/maps?q=$](https://www.google.com/maps?q=$){lat},${lng}" target="_blank" class="px-3 py-1 bg-indigo-100 text-indigo-700 hover:bg-indigo-600 hover:text-white rounded text-xs font-bold smooth-transition whitespace-nowrap"><i class="fas fa-map-marker-alt"></i> Peta</a>`;
+                        mapLink = `<a href="https://www.google.com/maps?q=${lat},${lng}" target="_blank" class="px-3 py-1 bg-indigo-100 text-indigo-700 hover:bg-indigo-600 hover:text-white rounded text-xs font-bold smooth-transition whitespace-nowrap"><i class="fas fa-map-marker-alt"></i> Peta</a>`;
                     }
                     
                     let typeBadge = "bg-gray-100 text-gray-800";
