@@ -164,15 +164,25 @@
             
             <!-- ==================== TAB 0: DASHBOARD ==================== -->
             <section id="view-dashboard" class="tab-content block">
-                <div class="mb-6">
-                    <h2 class="text-2xl font-bold text-gray-800">Sistem Deteksi Dini</h2>
-                    <p class="text-sm text-gray-500">Menampilkan siswa yang melampaui batas wajar absensi dan keterlambatan.</p>
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-800">Sistem Deteksi Dini</h2>
+                        <p class="text-sm text-gray-500">Menampilkan peringatan pelanggaran absensi & keterlambatan.</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-calendar-alt text-gray-400"></i>
+                        <select id="filterBulanDashboard" onchange="applyDashboardFilter()" class="pl-3 pr-8 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 font-semibold text-gray-700 bg-white shadow-sm">
+                            <!-- Opsi bulan akan diisi otomatis melalui Javascript -->
+                            <option value="Semua">Semua Waktu</option>
+                        </select>
+                        <button onclick="loadDashboard()" class="p-2 bg-white border border-gray-300 rounded-xl hover:bg-gray-50 text-gray-600 shadow-sm" title="Refresh Dashboard"><i class="fas fa-sync-alt"></i></button>
+                    </div>
                 </div>
 
                 <div class="bg-indigo-50 border border-indigo-100 rounded-xl p-4 mb-6 flex gap-3 items-start">
                     <i class="fas fa-info-circle text-indigo-500 mt-1"></i>
                     <p class="text-sm text-indigo-800">
-                        <b>Parameter Peringatan (Otomatis):</b> Alfa &ge; 3 kali, Sakit &ge; 7 kali, Izin &ge; 5 kali, Terlambat &ge; 3 kali.<br>
+                        <b>Parameter Peringatan:</b> Alfa &ge; 3 kali, Sakit &ge; 7 kali, Izin &ge; 5 kali, Terlambat &ge; 3 kali.<br>
                         Klik tombol <b>Lakukan Tindakan</b> untuk menindaklanjuti, data peringatan akan otomatis dihapus dari layar ini.
                     </p>
                 </div>
@@ -181,7 +191,7 @@
                     <div class="col-span-full text-center py-10 bg-white rounded-2xl border border-gray-200 border-dashed">
                         <i class="fas fa-shield-check text-4xl text-green-400 mb-3"></i>
                         <h3 class="font-bold text-gray-600">Semua Aman</h3>
-                        <p class="text-sm text-gray-400">Belum ada siswa yang melampaui batas pelanggaran.</p>
+                        <p class="text-sm text-gray-400">Belum ada siswa yang melampaui batas pelanggaran pada bulan ini.</p>
                     </div>
                 </div>
             </section>
@@ -509,43 +519,83 @@
 
     <!-- ==================== SCRIPT JAVASCRIPT ==================== -->
     <script>
-        // MASUKKAN URL GOOGLE SCRIPT MU DI SINI
+        // MASUKKAN URL GOOGLE SCRIPT MU DI SINI (JIKA DI DEPLOY KE VERCEL)
         const API_URL = 'https://script.google.com/macros/s/AKfycbwKzKuSUov87FM_qgWriQAAJfj7CPA5MFQN3_fbsMGL0vjRxKTLu_lDr7a_VEAp60h_PA/exec';
         
-        let windowDataKmobFiltered = []; // Variabel global untuk menyimpan data KMOB terfilter
+        // Mode development khusus canvas agar bisa dites tanpa terhubung Vercel asli
+        const IS_DEV = typeof google === 'undefined' && window.location.hostname !== "localhost" && window.location.hostname === "";
+        let windowDataKmobFiltered = []; 
+        let rawDashboardAbsen = [];
+        let rawDashboardTelat = [];
+        let rawDashboardTindak = [];
 
-        // FUNGSI UTAMA UNTUK MENGIRIM PERMINTAAN KE GOOGLE SCRIPT (MENGGUNAKAN FETCH API)
         function runBackend(funcName, args, callback) {
-            fetch(API_URL, {
-                redirect: "follow", // WAJIB untuk menangani redirect dari server Google
-                method: 'POST',
-                headers: {
-                    "Content-Type": "text/plain;charset=utf-8", // Menghindari isu CORS (Cross-Origin)
-                },
-                body: JSON.stringify({ action: funcName, args: args })
-            })
-            .then(response => {
-                if (!response.ok) throw new Error("HTTP error " + response.status);
-                return response.json();
-            })
-            .then(resData => {
-                if (resData.status === 'success') {
-                    callback(resData.data);
-                } else {
-                    console.error("Backend Error:", resData.message);
+            if (IS_DEV) {
+                // MOCK DATA UNTUK MODE CANVAS PREVIEW
+                setTimeout(() => {
+                    let mockDate = new Date();
+                    let mockDateStr = mockDate.toLocaleString('id-ID');
+                    let mockYMD = mockDate.getFullYear() + "-" + String(mockDate.getMonth()+1).padStart(2,'0') + "-" + String(mockDate.getDate()).padStart(2,'0');
+
+                    if (funcName === 'verifyLogin') {
+                        if (args[0] === 'admin' && args[1] === 'admin123') callback({ success: true, name: 'Admin (Preview)', role: 'Super Admin' });
+                        else callback({ success: false, message: 'Username atau password salah!' });
+                    } else if (funcName === 'getMasterData') {
+                        callback({ guruBK: ["Pak Mamat", "Bu Rina"], staff: {"Waka Kesiswaan": "Pak Bambang", "Kepala Sekolah": "Drs. Sugeng"} });
+                    } else if (funcName === 'getDetailSiswa') {
+                        if(args[0].includes("Budi")) callback({nisn: "222", nama: "Budi Santoso", ttl: "Bogor, 2 Feb 2008", namaOrtu: "Bapak Budi", hpOrtu: "08222", alamat: "Jl. B", tingkat: "X", kelas: "X MIPA 1", waliKelas: "Bu Ani", guruWali: "Pak Budi"});
+                        else callback(null);
+                    } else if (funcName === 'simpanDataKasus') {
+                        callback({success: true, message: "Tersimpan (Preview)"});
+                    } else if (funcName === 'getRiwayatKasus') callback([]);
+                    else if (funcName === 'getRekapAbsensi') {
+                        callback({ details: [
+                            [mockYMD, "222", "Budi Santoso", "X MIPA 1", "Alfa", "Bolos"],
+                            [mockYMD, "222", "Budi Santoso", "X MIPA 1", "Alfa", "Bolos"],
+                            [mockYMD, "222", "Budi Santoso", "X MIPA 1", "Alfa", "Bolos"],
+                            ["2026-07-15", "333", "Cici", "XI IPS 2", "Izin", "Keluarga"]
+                        ]});
+                    }
+                    else if (funcName === 'getRekapKeterlambatan') {
+                        callback([
+                            [mockYMD, "333", "Cici", "XI IPS 2", "07:30", "Macet"],
+                            [mockYMD, "333", "Cici", "XI IPS 2", "07:45", "Kesiangan"],
+                            [mockYMD, "333", "Cici", "XI IPS 2", "07:20", "Ban Bocor"],
+                            [mockYMD, "333", "Cici", "XI IPS 2", "08:00", "Bangun Telat"],
+                            ["2026-07-20", "111", "Andi", "X MIPA 1", "07:10", "Hujan"]
+                        ]);
+                    }
+                    else if (funcName === 'getDataTindakan') callback([]);
+                    else if (funcName === 'getRekapKmob') callback([
+                        ["111", "Andi", "X MIPA 1", mockYMD, "Masuk & Pulang", "06:20 - 15:10", "Tepat Waktu", "-6.42345", "106.73234"],
+                        ["222", "Budi Santoso", "X MIPA 1", mockYMD, "Hanya Pulang", "--:-- - 15:30", "Terlambat (Tidak absen masuk)", "-6.42350", "106.73200"],
+                        ["333", "Cici", "XI IPS 2", "2026-07-20", "Hanya Masuk", "12:45 - --:--", "Bolos & Terlambat (12:45)", "-6.42310", "106.73290"]
+                    ]);
+                    else if (funcName === 'simpanTindakan') callback({ success: true });
+                }, 800);
+            } else {
+                fetch(API_URL, {
+                    redirect: "follow",
+                    method: 'POST',
+                    headers: { "Content-Type": "text/plain;charset=utf-8" },
+                    body: JSON.stringify({ action: funcName, args: args })
+                })
+                .then(response => {
+                    if (!response.ok) throw new Error("HTTP error " + response.status);
+                    return response.json();
+                })
+                .then(resData => {
+                    if (resData.status === 'success') callback(resData.data);
+                    else {
+                        setLoading(false);
+                        showToast("Error: " + resData.message, false);
+                    }
+                })
+                .catch(err => {
                     setLoading(false);
-                    showToast("Error dari server: " + resData.message, false);
-                }
-            })
-            .catch(err => {
-                console.error("Fetch Error:", err);
-                setLoading(false);
-                if (err.message.includes("Failed to fetch") || err.name === "TypeError") {
-                    showToast("Koneksi Ditolak! Pastikan akses Apps Script di-set ke 'Siapa saja' (Anyone).", false);
-                } else {
-                    showToast("Terjadi kesalahan koneksi jaringan!", false);
-                }
-            });
+                    showToast("Koneksi Ditolak: Pastikan Google Script di-deploy ke 'Siapa saja'", false);
+                });
+            }
         }
 
         function prosesLogin(e) {
@@ -575,7 +625,7 @@
                     showToast("Selamat datang, " + res.name + "!");
                     initializeApp();
                 } else {
-                    showToast(res ? res.message : "Terjadi kesalahan koneksi", false);
+                    showToast(res ? res.message : "Username / Password Salah", false);
                 }
             });
         }
@@ -643,13 +693,80 @@
                 runBackend('getRekapKeterlambatan', [], function(resTelat) {
                     runBackend('getDataTindakan', [], function(resTindakan) {
                         setLoading(false);
-                        let dataAbsensi = resAbsensi && resAbsensi.details ? resAbsensi.details : [];
-                        let dataTelatArr = resTelat || [];
-                        let dataTindakanArr = resTindakan || [];
-                        prosesDataDashboard(dataAbsensi, dataTelatArr, dataTindakanArr);
+                        rawDashboardAbsen = resAbsensi && resAbsensi.details ? resAbsensi.details : [];
+                        rawDashboardTelat = resTelat || [];
+                        rawDashboardTindak = resTindakan || [];
+                        
+                        buildDashboardMonthFilter();
+                        applyDashboardFilter();
                     });
                 });
             });
+        }
+
+        function buildDashboardMonthFilter() {
+            let months = new Set();
+            rawDashboardAbsen.forEach(r => {
+                let d = new Date(r[0]);
+                if(!isNaN(d.getTime())) months.add(d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2, '0'));
+            });
+            rawDashboardTelat.forEach(r => {
+                let d = new Date(r[0]);
+                if(!isNaN(d.getTime())) months.add(d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2, '0'));
+            });
+
+            let sel = document.getElementById('filterBulanDashboard');
+            let currentVal = sel.value;
+            sel.innerHTML = '<option value="Semua">Semua Waktu</option>';
+
+            let monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+            let sortedMonths = Array.from(months).sort().reverse();
+            
+            let now = new Date();
+            let currentYM = now.getFullYear() + "-" + String(now.getMonth()+1).padStart(2, '0');
+            let hasCurrent = false;
+
+            sortedMonths.forEach(ym => {
+                let parts = ym.split("-");
+                let text = monthNames[parseInt(parts[1])-1] + " " + parts[0];
+                let opt = document.createElement('option');
+                opt.value = ym;
+                opt.text = text;
+                sel.add(opt);
+                if(ym === currentYM) hasCurrent = true;
+            });
+
+            if(currentVal && sortedMonths.includes(currentVal)) sel.value = currentVal;
+            else if (hasCurrent) sel.value = currentYM;
+            else if (sortedMonths.length > 0) sel.value = sortedMonths[0];
+            else sel.value = "Semua";
+        }
+
+        function applyDashboardFilter() {
+            let filterVal = document.getElementById('filterBulanDashboard').value;
+
+            let fAbsen = rawDashboardAbsen.filter(r => {
+                if(filterVal === "Semua") return true;
+                let d = new Date(r[0]);
+                if(isNaN(d.getTime())) return false;
+                return (d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2, '0')) === filterVal;
+            });
+
+            let fTelat = rawDashboardTelat.filter(r => {
+                if(filterVal === "Semua") return true;
+                let d = new Date(r[0]);
+                if(isNaN(d.getTime())) return false;
+                return (d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2, '0')) === filterVal;
+            });
+
+            let fTindak = rawDashboardTindak.filter(r => {
+                if(filterVal === "Semua") return true;
+                let d = new Date(r[0]);
+                if(isNaN(d.getTime())) return false;
+                return (d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2, '0')) === filterVal;
+            });
+
+            prosesDataDashboard(fAbsen, fTelat, fTindak);
         }
 
         function prosesDataDashboard(dataAbsen, dataTelat, dataTindakan) {
@@ -699,7 +816,7 @@
                     <div class="col-span-full text-center py-10 bg-white rounded-2xl border border-gray-200 border-dashed">
                         <i class="fas fa-shield-check text-4xl text-green-400 mb-3"></i>
                         <h3 class="font-bold text-gray-600">Semua Aman</h3>
-                        <p class="text-sm text-gray-400">Belum ada siswa yang melampaui batas pelanggaran saat ini.</p>
+                        <p class="text-sm text-gray-400">Belum ada siswa yang melampaui batas pelanggaran pada bulan ini.</p>
                     </div>`;
             }
         }
@@ -993,8 +1110,6 @@
             document.getElementById('tabelRekapSiswaTelat').innerHTML = tbodyR || "<tr><td colspan='5' class='p-4 text-center text-gray-400'>Belum ada rekap.</td></tr>";
         }
 
-        let rawDataKmob = [];
-        
         function loadDataKmob(isAuto = false) {
             if (!isAuto) setLoading(true, "Memuat data KMOB...");
             
@@ -1005,12 +1120,15 @@
                 if (!isAuto) setLoading(false);
                 if (btnIcon) btnIcon.classList.remove('fa-spin');
 
-                rawDataKmob = res || [];
+                let rawDataKmob = res || [];
                 let kSet = new Set(); rawDataKmob.forEach(r => { if(r[2]) kSet.add(r[2]); });
                 let sel = document.getElementById('filterKelasKmob'); let cVal = sel.value;
                 sel.innerHTML = '<option value="Semua">Semua Kelas</option>';
                 Array.from(kSet).sort().forEach(k => { let opt=document.createElement('option'); opt.value=k; opt.text=k; sel.add(opt); });
                 if(Array.from(kSet).includes(cVal)) sel.value = cVal;
+                
+                // Panggil filter dan simpan data original secara global
+                window.globalKmobData = rawDataKmob;
                 applyFilterKmob();
             });
         }
@@ -1019,7 +1137,6 @@
             loadDataKmob(false);
         }
 
-        // Timer Auto Refresh tiap 60 detik secara diam-diam
         setInterval(() => {
             let mainApp = document.getElementById('mainApp');
             let tabKmob = document.getElementById('tab-kmob');
@@ -1029,6 +1146,7 @@
         }, 60000);
 
         function applyFilterKmob() {
+            let rawDataKmob = window.globalKmobData || [];
             let fKelas = document.getElementById('filterKelasKmob').value;
             let fStatus = document.getElementById('filterStatusKmob').value;
             
