@@ -173,7 +173,7 @@
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-6 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
                     <div>
                         <h2 class="text-2xl font-bold text-gray-800">Sistem Deteksi Dini</h2>
-                        <p class="text-sm text-gray-500 mt-1">Siswa yang melampaui batas wajar absensi dan keterlambatan.</p>
+                        <p class="text-sm text-gray-500 mt-1">Siswa yang melampaui batas wajar absensi (Alfa/Sakit/Izin) dan keterlambatan.</p>
                         <div class="flex flex-wrap items-center gap-2 mt-3">
                             <i class="fas fa-calendar-alt text-gray-400"></i>
                             <select id="filterBulanDashboard" onchange="applyDashboardFilter()" class="pl-3 pr-8 py-1.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 text-sm font-semibold text-gray-700 bg-gray-50 shadow-sm">
@@ -185,6 +185,7 @@
                             </button>
                         </div>
                     </div>
+                    <!-- Live Clock Kotak Dashboard -->
                     <div class="text-left lg:text-right bg-indigo-50 px-5 py-3 rounded-xl border border-indigo-100 w-full lg:w-auto flex flex-row lg:flex-col justify-between lg:justify-center items-center lg:items-end">
                         <p class="text-sm font-bold text-indigo-800" id="liveDateDash">Memuat tanggal...</p>
                         <p class="text-2xl font-black text-indigo-600 font-mono tracking-tight" id="liveTimeDash">--:--:--</p>
@@ -343,7 +344,7 @@
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
                     <div>
                         <h2 class="text-2xl font-bold text-gray-800"><i class="fas fa-calendar-check text-indigo-500 mr-2"></i> Rekapitulasi Absensi</h2>
-                        <p class="text-sm text-gray-500">Monitoring kehadiran harian siswa.</p>
+                        <p class="text-sm text-gray-500">Monitoring kehadiran harian siswa dari Sheet DataAbsensi.</p>
                     </div>
                     <div class="flex items-center gap-2">
                         <i class="fas fa-filter text-gray-400"></i>
@@ -563,81 +564,47 @@
         setInterval(updateLiveClock, 1000);
         updateLiveClock();
 
-        // -------------------------------------------------------------
-        const IS_DEV = typeof google === 'undefined';
+        // MASUKKAN URL GOOGLE SCRIPT MU DI SINI (Digunakan saat Deploy ke Vercel/Github)
+        const API_URL = 'https://script.google.com/macros/s/AKfycbwKzKuSUov87FM_qgWriQAAJfj7CPA5MFQN3_fbsMGL0vjRxKTLu_lDr7a_VEAp60h_PA/exec';
         
-        let mockSiswa = [
-            ["111", "Andi", "Jakarta, 1 Jan 2008", "Bapak Andi", "08111", "Jl. A", "X", "X MIPA 1", "Bu Ani", "Pak Budi"],
-            ["222", "Budi Santoso", "Bogor, 2 Feb 2008", "Bapak Budi", "08222", "Jl. B", "X", "X MIPA 1", "Bu Ani", "Pak Budi"],
-            ["333", "Cici", "Depok, 3 Mar 2007", "Bapak Cici", "08333", "Jl. C", "XI", "XI IPS 2", "Pak Dedi", "Bu Euis"],
-            ["444", "Ahmad Fauzi", "Tangerang, 10 Sep 2007", "Bapak Fauzi", "08444", "Jl. D", "XI", "XI IPS 2", "Pak Dedi", "Bu Euis"]
-        ];
-        
-        // Mock data untuk mode preview
-        let allAbsensiData = [
-            [new Date().toString(), "222", "Budi Santoso", "X MIPA 1", "Alfa", "Bolos"],
-            [new Date().toString(), "222", "Budi Santoso", "X MIPA 1", "Alfa", "Bolos"],
-            [new Date().toString(), "222", "Budi Santoso", "X MIPA 1", "Alfa", "Bolos"],
-            [new Date().toString(), "444", "Ahmad Fauzi", "XI IPS 2", "Sakit", "Demam"],
-            [new Date().toString(), "444", "Ahmad Fauzi", "XI IPS 2", "Sakit", "Demam"],
-            [new Date().toString(), "444", "Ahmad Fauzi", "XI IPS 2", "Sakit", "Demam"],
-            [new Date().toString(), "444", "Ahmad Fauzi", "XI IPS 2", "Sakit", "Demam"],
-            [new Date().toString(), "444", "Ahmad Fauzi", "XI IPS 2", "Sakit", "Demam"],
-            [new Date().toString(), "444", "Ahmad Fauzi", "XI IPS 2", "Sakit", "Demam"],
-            [new Date().toString(), "444", "Ahmad Fauzi", "XI IPS 2", "Sakit", "Demam"],
-            [new Date().toString(), "111", "Andi", "X MIPA 1", "Hadir", "-"],
-            [new Date().toString(), "333", "Cici", "XI IPS 2", "Izin", "Acara Keluarga"]
-        ];
-        let allTelatData = [
-            [new Date().toString(), "333", "Cici", "XI IPS 2", "07:30", "Macet"],
-            [new Date().toString(), "333", "Cici", "XI IPS 2", "07:45", "Kesiangan"],
-            [new Date().toString(), "333", "Cici", "XI IPS 2", "07:20", "Ban Bocor"],
-            [new Date().toString(), "333", "Cici", "XI IPS 2", "08:00", "Bangun Telat"],
-            [new Date().toString(), "111", "Andi", "X MIPA 1", "07:10", "Hujan"]
-        ];
-        let allKmobData = [
-            ["111", "Andi", "X MIPA 1", new Date().toLocaleDateString('id-ID'), "Masuk & Pulang", "06:20 - 15:10", "Tepat Waktu", "-6.42345", "106.73234"],
-            ["222", "Budi Santoso", "X MIPA 1", new Date().toLocaleDateString('id-ID'), "Hanya Pulang", "--:-- - 15:30", "Terlambat (Tidak absen masuk)", "-6.42350", "106.73200"],
-            ["333", "Cici", "XI IPS 2", new Date().toLocaleDateString('id-ID'), "Hanya Masuk", "12:45 - --:--", "Bolos & Terlambat (12:45)", "-6.42310", "106.73290"]
-        ];
-        let allKasusData = [];
-        let allTindakanData = [];
+        let windowDataKmobFiltered = []; 
+        let rawDashboardAbsen = [];
+        let rawDashboardTelat = [];
+        let rawDashboardTindak = [];
 
+        // FUNGSI PENGHUBUNG BACKEND
         function runBackend(funcName, args, callback) {
-            if (!IS_DEV) {
-                let runner = google.script.run.withSuccessHandler(callback).withFailureHandler(err => {
-                    console.error(err);
+            // Karena ini Canvas Preview, kita asumsikan menggunakan fetch ke url yang diberikan user
+            fetch(API_URL, {
+                redirect: "follow", 
+                method: 'POST',
+                headers: {
+                    "Content-Type": "text/plain;charset=utf-8", 
+                },
+                body: JSON.stringify({ action: funcName, args: args })
+            })
+            .then(response => {
+                if (!response.ok) throw new Error("HTTP error " + response.status);
+                return response.json();
+            })
+            .then(resData => {
+                if (resData.status === 'success') {
+                    callback(resData.data);
+                } else {
+                    console.error("Backend Error:", resData.message);
                     setLoading(false);
-                    showToast("Terjadi kesalahan server!", false);
-                });
-                if(args.length === 0) runner[funcName]();
-                else if(args.length === 1) runner[funcName](args[0]);
-                else if(args.length === 2) runner[funcName](args[0], args[1]);
-            } else {
-                setTimeout(() => {
-                    if (funcName === 'verifyLogin') {
-                        if (args[0] === 'admin' && args[1] === 'admin123') callback({ success: true, name: 'Admin Simulasi', role: 'Super Admin' });
-                        else callback({ success: false, message: 'Username atau password salah!' });
-                    } else if (funcName === 'getMasterData') {
-                        callback({ guruBK: ["Pak Mamat (BK)", "Bu Rina (BK)"], staff: {"Waka Kesiswaan": "Pak Bambang", "Kepala Sekolah": "Drs. H. Sugeng"} });
-                    } else if (funcName === 'getDetailSiswa') {
-                        let find = mockSiswa.find(s => s[0] === args[0] || s[1].toLowerCase() === args[0].toLowerCase());
-                        if(find) callback({nisn: find[0], nama: find[1], ttl: find[2], namaOrtu: find[3], hpOrtu: find[4], alamat: find[5], tingkat: find[6], kelas: find[7], waliKelas: find[8], guruWali: find[9]});
-                        else callback(null);
-                    } else if (funcName === 'simpanDataKasus') {
-                        allKasusData.unshift([args[0].tanggal, args[0].nisn, args[0].namaSiswa, args[0].kelas, args[0].tanggal, args[0].guruBK, args[0].jenisPelanggaran, args[0].permasalahan, args[0].tindakLanjut, args[0].penyelesai, args[0].keterangan, "dummy.pdf"]);
-                        callback({success: true, message: "Berhasil disimpan (Mode Simulasi)"});
-                    } else if (funcName === 'getRiwayatKasus') callback(allKasusData);
-                    else if (funcName === 'getRekapAbsensi') callback({ details: allAbsensiData });
-                    else if (funcName === 'getRekapKeterlambatan') callback(allTelatData);
-                    else if (funcName === 'getDataTindakan') callback(allTindakanData);
-                    else if (funcName === 'getRekapKmob') callback(allKmobData);
-                    else if (funcName === 'simpanTindakan') {
-                        allTindakanData.push([new Date().toString(), args[0].nisn, args[0].kategori, args[0].jumlah]);
-                        callback({ success: true });
-                    }
-                }, 800);
-            }
+                    showToast("Error dari server: " + resData.message, false);
+                }
+            })
+            .catch(err => {
+                console.error("Fetch Error:", err);
+                setLoading(false);
+                if (err.message.includes("Failed to fetch") || err.name === "TypeError") {
+                    showToast("Koneksi ditolak! Pastikan akses API diset ke 'Siapa saja'.", false);
+                } else {
+                    showToast("Terjadi kesalahan jaringan!", false);
+                }
+            });
         }
 
         function prosesLogin(e) {
@@ -729,16 +696,14 @@
             else document.getElementById('loadingOverlay').classList.add('hidden');
         }
 
-        let rawDashboardAbsen = [];
-        let rawDashboardTelat = [];
-        let rawDashboardTindak = [];
-
+        // ======================= DASHBOARD LOGIC =======================
         function loadDashboard() {
             setLoading(true, "Menganalisis data harian...");
             runBackend('getRekapAbsensi', [], function(resAbsensi) {
                 runBackend('getRekapKeterlambatan', [], function(resTelat) {
                     runBackend('getDataTindakan', [], function(resTindakan) {
                         setLoading(false);
+                        
                         rawDashboardAbsen = resAbsensi && resAbsensi.details ? resAbsensi.details : [];
                         rawDashboardTelat = resTelat || [];
                         rawDashboardTindak = resTindakan || [];
@@ -817,7 +782,10 @@
 
         function prosesDataDashboard(dataAbsen, dataTelat, dataTindakan) {
             let rekapSiswa = {}; 
+            
+            // Mengambil peringatan secara eksklusif dari DataAbsensi
             dataAbsen.forEach(r => {
+                // Indeks 1: NISN, Indeks 2: Nama, Indeks 4: Status Kehadiran
                 let nisn = r[1], nama = r[2], status = r[4] ? r[4].toLowerCase() : "";
                 if(!nisn) return;
                 if(!rekapSiswa[nisn]) rekapSiswa[nisn] = { nama: nama, alfa: 0, sakit: 0, izin: 0, telat: 0 };
@@ -1077,6 +1045,7 @@
             });
         }
 
+        // ======================= TAB ABSENSI =======================
         let rawDataAbsensi = [];
         function loadDataAbsensi() {
             setLoading(true);
@@ -1157,7 +1126,6 @@
         }
 
         let rawDataKmob = [];
-        let windowDataKmobFiltered = []; 
         
         function loadDataKmob(isAuto = false) {
             if (!isAuto) setLoading(true, "Memuat data KMOB...");
