@@ -194,7 +194,7 @@
                 <div class="bg-indigo-50 border border-indigo-100 rounded-xl p-4 mb-6 flex gap-3 items-start">
                     <i class="fas fa-info-circle text-indigo-500 mt-1"></i>
                     <p class="text-sm text-indigo-800">
-                        <b>Parameter Peringatan:</b> Alfa &ge; 3 kali, Sakit &ge; 7 kali, Izin &ge; 5 kali, Terlambat &ge; 3 kali.<br>
+                        <b>Parameter Peringatan (Otomatis):</b> Alfa &ge; 3 kali, Sakit &ge; 7 kali, Izin &ge; 5 kali, Terlambat &ge; 3 kali.<br>
                         Klik tombol <b>Lakukan Tindakan</b> untuk menindaklanjuti, data peringatan akan otomatis dihapus dari layar ini.
                     </p>
                 </div>
@@ -564,79 +564,79 @@
         updateLiveClock();
 
         // -------------------------------------------------------------
-        // MASUKKAN URL GOOGLE SCRIPT MU DI SINI
-        const API_URL = 'https://script.google.com/macros/s/AKfycbwKzKuSUov87FM_qgWriQAAJfj7CPA5MFQN3_fbsMGL0vjRxKTLu_lDr7a_VEAp60h_PA/exec';
+        const IS_DEV = typeof google === 'undefined';
         
-        let windowDataKmobFiltered = []; 
-        let rawDashboardAbsen = [];
-        let rawDashboardTelat = [];
-        let rawDashboardTindak = [];
-
-        // HANYA UNTUK PREVIEW (CANVAS). JIKA DI VERCEL, IS_DEV HARUS FALSE.
-        const IS_DEV = typeof google === 'undefined' && window.location.hostname === "";
+        let mockSiswa = [
+            ["111", "Andi", "Jakarta, 1 Jan 2008", "Bapak Andi", "08111", "Jl. A", "X", "X MIPA 1", "Bu Ani", "Pak Budi"],
+            ["222", "Budi Santoso", "Bogor, 2 Feb 2008", "Bapak Budi", "08222", "Jl. B", "X", "X MIPA 1", "Bu Ani", "Pak Budi"],
+            ["333", "Cici", "Depok, 3 Mar 2007", "Bapak Cici", "08333", "Jl. C", "XI", "XI IPS 2", "Pak Dedi", "Bu Euis"],
+            ["444", "Ahmad Fauzi", "Tangerang, 10 Sep 2007", "Bapak Fauzi", "08444", "Jl. D", "XI", "XI IPS 2", "Pak Dedi", "Bu Euis"]
+        ];
+        
+        // Mock data untuk mode preview
+        let allAbsensiData = [
+            [new Date().toString(), "222", "Budi Santoso", "X MIPA 1", "Alfa", "Bolos"],
+            [new Date().toString(), "222", "Budi Santoso", "X MIPA 1", "Alfa", "Bolos"],
+            [new Date().toString(), "222", "Budi Santoso", "X MIPA 1", "Alfa", "Bolos"],
+            [new Date().toString(), "444", "Ahmad Fauzi", "XI IPS 2", "Sakit", "Demam"],
+            [new Date().toString(), "444", "Ahmad Fauzi", "XI IPS 2", "Sakit", "Demam"],
+            [new Date().toString(), "444", "Ahmad Fauzi", "XI IPS 2", "Sakit", "Demam"],
+            [new Date().toString(), "444", "Ahmad Fauzi", "XI IPS 2", "Sakit", "Demam"],
+            [new Date().toString(), "444", "Ahmad Fauzi", "XI IPS 2", "Sakit", "Demam"],
+            [new Date().toString(), "444", "Ahmad Fauzi", "XI IPS 2", "Sakit", "Demam"],
+            [new Date().toString(), "444", "Ahmad Fauzi", "XI IPS 2", "Sakit", "Demam"],
+            [new Date().toString(), "111", "Andi", "X MIPA 1", "Hadir", "-"],
+            [new Date().toString(), "333", "Cici", "XI IPS 2", "Izin", "Acara Keluarga"]
+        ];
+        let allTelatData = [
+            [new Date().toString(), "333", "Cici", "XI IPS 2", "07:30", "Macet"],
+            [new Date().toString(), "333", "Cici", "XI IPS 2", "07:45", "Kesiangan"],
+            [new Date().toString(), "333", "Cici", "XI IPS 2", "07:20", "Ban Bocor"],
+            [new Date().toString(), "333", "Cici", "XI IPS 2", "08:00", "Bangun Telat"],
+            [new Date().toString(), "111", "Andi", "X MIPA 1", "07:10", "Hujan"]
+        ];
+        let allKmobData = [
+            ["111", "Andi", "X MIPA 1", new Date().toLocaleDateString('id-ID'), "Masuk & Pulang", "06:20 - 15:10", "Tepat Waktu", "-6.42345", "106.73234"],
+            ["222", "Budi Santoso", "X MIPA 1", new Date().toLocaleDateString('id-ID'), "Hanya Pulang", "--:-- - 15:30", "Terlambat (Tidak absen masuk)", "-6.42350", "106.73200"],
+            ["333", "Cici", "XI IPS 2", new Date().toLocaleDateString('id-ID'), "Hanya Masuk", "12:45 - --:--", "Bolos & Terlambat (12:45)", "-6.42310", "106.73290"]
+        ];
+        let allKasusData = [];
+        let allTindakanData = [];
 
         function runBackend(funcName, args, callback) {
-            if (IS_DEV) {
-                // MOCK DATA UNTUK MODE CANVAS PREVIEW
-                setTimeout(() => {
-                    let mockYMD = new Date().getFullYear() + "-" + String(new Date().getMonth()+1).padStart(2,'0') + "-" + String(new Date().getDate()).padStart(2,'0');
-
-                    if (funcName === 'verifyLogin') {
-                        if (args[0] === 'admin' && args[1] === 'admin123') callback({ success: true, name: 'Admin (Preview)', role: 'Super Admin' });
-                        else callback({ success: false, message: 'Username/password salah' });
-                    } else if (funcName === 'getMasterData') {
-                        callback({ guruBK: ["Pak Mamat", "Bu Rina"], staff: {"Waka Kesiswaan": "Pak Bambang", "Kepala Sekolah": "Drs. Sugeng"} });
-                    } else if (funcName === 'getDetailSiswa') {
-                        if(args[0].includes("Budi")) callback({nisn: "222", nama: "Budi Santoso", ttl: "Bogor, 2 Feb 2008", namaOrtu: "Bapak Budi", hpOrtu: "08222", alamat: "Jl. B", tingkat: "X", kelas: "X MIPA 1", waliKelas: "Bu Ani", guruWali: "Pak Budi"});
-                        else callback(null);
-                    } else if (funcName === 'simpanDataKasus') callback({success: true, message: "Tersimpan (Preview)"});
-                    else if (funcName === 'getRiwayatKasus') callback([]);
-                    else if (funcName === 'getRekapAbsensi') {
-                        callback({ details: [
-                            [mockYMD, "222", "Budi Santoso", "X MIPA 1", "Alfa", "Bolos"],
-                            [mockYMD, "222", "Budi Santoso", "X MIPA 1", "Alfa", "Bolos"],
-                            [mockYMD, "222", "Budi Santoso", "X MIPA 1", "Alfa", "Bolos"],
-                            ["2026-07-15", "333", "Cici", "XI IPS 2", "Izin", "Keluarga"]
-                        ]});
-                    }
-                    else if (funcName === 'getRekapKeterlambatan') {
-                        callback([
-                            [mockYMD, "333", "Cici", "XI IPS 2", "07:30", "Macet"],
-                            [mockYMD, "333", "Cici", "XI IPS 2", "07:45", "Kesiangan"],
-                            [mockYMD, "333", "Cici", "XI IPS 2", "07:20", "Ban Bocor"],
-                            [mockYMD, "333", "Cici", "XI IPS 2", "08:00", "Bangun Telat"]
-                        ]);
-                    }
-                    else if (funcName === 'getDataTindakan') callback([]);
-                    else if (funcName === 'getRekapKmob') callback([
-                        ["111", "Andi", "X MIPA 1", mockYMD, "Masuk & Pulang", "06:20 - 15:10", "Tepat Waktu", "-6.42345", "106.73234"],
-                        ["222", "Budi Santoso", "X MIPA 1", mockYMD, "Hanya Pulang", "--:-- - 15:30", "Terlambat (Tidak absen masuk)", "-6.42350", "106.73200"],
-                        ["333", "Cici", "XI IPS 2", "2026-07-20", "Hanya Masuk", "12:45 - --:--", "Bolos & Terlambat (12:45)", "-6.42310", "106.73290"]
-                    ]);
-                    else if (funcName === 'simpanTindakan') callback({ success: true });
-                }, 800);
-            } else {
-                fetch(API_URL, {
-                    redirect: "follow",
-                    method: 'POST',
-                    headers: { "Content-Type": "text/plain;charset=utf-8" },
-                    body: JSON.stringify({ action: funcName, args: args })
-                })
-                .then(response => {
-                    if (!response.ok) throw new Error("HTTP error " + response.status);
-                    return response.json();
-                })
-                .then(resData => {
-                    if (resData.status === 'success') callback(resData.data);
-                    else {
-                        setLoading(false);
-                        showToast("Error: " + resData.message, false);
-                    }
-                })
-                .catch(err => {
+            if (!IS_DEV) {
+                let runner = google.script.run.withSuccessHandler(callback).withFailureHandler(err => {
+                    console.error(err);
                     setLoading(false);
-                    showToast("Koneksi Ditolak: Pastikan Google Script di-deploy ke 'Siapa saja'", false);
+                    showToast("Terjadi kesalahan server!", false);
                 });
+                if(args.length === 0) runner[funcName]();
+                else if(args.length === 1) runner[funcName](args[0]);
+                else if(args.length === 2) runner[funcName](args[0], args[1]);
+            } else {
+                setTimeout(() => {
+                    if (funcName === 'verifyLogin') {
+                        if (args[0] === 'admin' && args[1] === 'admin123') callback({ success: true, name: 'Admin Simulasi', role: 'Super Admin' });
+                        else callback({ success: false, message: 'Username atau password salah!' });
+                    } else if (funcName === 'getMasterData') {
+                        callback({ guruBK: ["Pak Mamat (BK)", "Bu Rina (BK)"], staff: {"Waka Kesiswaan": "Pak Bambang", "Kepala Sekolah": "Drs. H. Sugeng"} });
+                    } else if (funcName === 'getDetailSiswa') {
+                        let find = mockSiswa.find(s => s[0] === args[0] || s[1].toLowerCase() === args[0].toLowerCase());
+                        if(find) callback({nisn: find[0], nama: find[1], ttl: find[2], namaOrtu: find[3], hpOrtu: find[4], alamat: find[5], tingkat: find[6], kelas: find[7], waliKelas: find[8], guruWali: find[9]});
+                        else callback(null);
+                    } else if (funcName === 'simpanDataKasus') {
+                        allKasusData.unshift([args[0].tanggal, args[0].nisn, args[0].namaSiswa, args[0].kelas, args[0].tanggal, args[0].guruBK, args[0].jenisPelanggaran, args[0].permasalahan, args[0].tindakLanjut, args[0].penyelesai, args[0].keterangan, "dummy.pdf"]);
+                        callback({success: true, message: "Berhasil disimpan (Mode Simulasi)"});
+                    } else if (funcName === 'getRiwayatKasus') callback(allKasusData);
+                    else if (funcName === 'getRekapAbsensi') callback({ details: allAbsensiData });
+                    else if (funcName === 'getRekapKeterlambatan') callback(allTelatData);
+                    else if (funcName === 'getDataTindakan') callback(allTindakanData);
+                    else if (funcName === 'getRekapKmob') callback(allKmobData);
+                    else if (funcName === 'simpanTindakan') {
+                        allTindakanData.push([new Date().toString(), args[0].nisn, args[0].kategori, args[0].jumlah]);
+                        callback({ success: true });
+                    }
+                }, 800);
             }
         }
 
@@ -728,6 +728,10 @@
             if(show) document.getElementById('loadingOverlay').classList.remove('hidden');
             else document.getElementById('loadingOverlay').classList.add('hidden');
         }
+
+        let rawDashboardAbsen = [];
+        let rawDashboardTelat = [];
+        let rawDashboardTindak = [];
 
         function loadDashboard() {
             setLoading(true, "Menganalisis data harian...");
@@ -858,7 +862,7 @@
                     <div class="col-span-full text-center py-10 bg-white rounded-2xl border border-gray-200 border-dashed">
                         <i class="fas fa-shield-check text-4xl text-green-400 mb-3"></i>
                         <h3 class="font-bold text-gray-600">Semua Aman</h3>
-                        <p class="text-sm text-gray-400">Belum ada siswa yang melampaui batas pelanggaran saat ini.</p>
+                        <p class="text-sm text-gray-400">Belum ada siswa yang melampaui batas pelanggaran pada bulan ini.</p>
                     </div>`;
             }
         }
@@ -1153,6 +1157,7 @@
         }
 
         let rawDataKmob = [];
+        let windowDataKmobFiltered = []; 
         
         function loadDataKmob(isAuto = false) {
             if (!isAuto) setLoading(true, "Memuat data KMOB...");
