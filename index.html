@@ -140,7 +140,29 @@
             </div>
         </div>
 
-        <!-- Modal Detail Dashboard Kategori (Sakit/Izin/Alfa/Terlambat) -->
+        <!-- Modal Detail Tanggal (Sakit/Izin/Alfa/Terlambat per siswa) -->
+        <div id="modalTanggalSiswa" class="hidden fixed inset-0 bg-gray-900/60 z-[60] flex items-center justify-center backdrop-blur-sm p-4">
+            <div class="bg-white p-6 rounded-2xl shadow-xl max-w-md w-full relative transform scale-95 transition-transform duration-300 origin-center flex flex-col max-h-[80vh]" id="modalBoxTanggalSiswa">
+                <div class="flex justify-between items-center mb-2">
+                    <h3 class="text-lg font-bold text-gray-800 flex items-center gap-2" id="titleModalTanggalSiswa"><i class="fas fa-calendar-day text-indigo-500"></i> Detail Tanggal</h3>
+                    <button onclick="tutupModalTanggalSiswa()" class="text-gray-400 hover:text-red-500 smooth-transition"><i class="fas fa-times text-xl"></i></button>
+                </div>
+                <p class="text-xs text-gray-500 mb-3" id="subtitleModalTanggalSiswa"></p>
+                <div class="overflow-y-auto flex-grow rounded-xl border border-gray-200">
+                    <table class="min-w-full divide-y divide-gray-200 text-sm">
+                        <thead class="bg-gray-50 sticky top-0">
+                            <tr>
+                                <th class="px-4 py-2 text-center font-bold text-gray-600 w-12">No</th>
+                                <th class="px-4 py-2 text-left font-bold text-gray-600">Tanggal</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabelTanggalSiswa" class="bg-white divide-y divide-gray-100"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Detail Dashboard Kategori (Sakit/Izin/Alfa) -->
         <div id="modalDetailDashboard" class="hidden fixed inset-0 bg-gray-900/50 z-50 flex items-center justify-center backdrop-blur-sm p-4">
             <div class="bg-white p-6 rounded-2xl shadow-xl max-w-3xl w-full relative transform scale-95 transition-transform duration-300 origin-center flex flex-col max-h-[85vh]" id="modalBoxDashboard">
                 <div class="flex justify-between items-center mb-4">
@@ -680,6 +702,7 @@
         let rawDashboardAbsen = [];
         let rawDashboardTindak = [];
         let dashboardCategoryData = { Alfa: [], Sakit: [], Izin: [] };
+        let dashboardTanggalMap = {};
 
         function runBackend(funcName, args, callback) {
             fetch(API_URL, {
@@ -910,6 +933,7 @@
 
         function prosesDataDashboard(dataAbsen, dataTindakan) {
             // dataAbsen bersumber HANYA dari sheet DataAbsensi.
+            // Jumlah dihitung dari TANGGAL UNIK per siswa per kategori (anti duplikat).
             let rekapSiswa = {}; 
             
             dataAbsen.forEach(r => {
@@ -920,13 +944,14 @@
                 let statusText = (r[4] || "").toString().toLowerCase().trim();
                 let ketText = (r[5] || "").toString().toLowerCase().trim();
                 let st = statusText ? statusText : ketText;
+                let tgl = tanggalKeyOnly(r[0]);
                 
                 if(!nisn) return;
-                if(!rekapSiswa[nisn]) rekapSiswa[nisn] = { nama: nama, kelas: kelas, alfa: 0, sakit: 0, izin: 0 };
+                if(!rekapSiswa[nisn]) rekapSiswa[nisn] = { nama: nama, kelas: kelas, tglAlfa: new Set(), tglSakit: new Set(), tglIzin: new Set() };
                 
-                if(st === 'a' || st.includes('alfa') || st.includes('alpha')) rekapSiswa[nisn].alfa++;
-                else if(st === 's' || st.includes('sakit')) rekapSiswa[nisn].sakit++;
-                else if(st === 'i' || st.includes('izin') || st.includes('ijin')) rekapSiswa[nisn].izin++;
+                if(st === 'a' || st.includes('alfa') || st.includes('alpha')) rekapSiswa[nisn].tglAlfa.add(tgl);
+                else if(st === 's' || st.includes('sakit')) rekapSiswa[nisn].tglSakit.add(tgl);
+                else if(st === 'i' || st.includes('izin') || st.includes('ijin')) rekapSiswa[nisn].tglIzin.add(tgl);
             });
 
             let tracker = {};
@@ -939,19 +964,24 @@
             const BATAS = { alfa: 3, sakit: 7, izin: 5 };
 
             dashboardCategoryData = { Alfa: [], Sakit: [], Izin: [] };
+            dashboardTanggalMap = {};
 
             for (let nisn in rekapSiswa) {
                 let s = rekapSiswa[nisn];
                 let tr = tracker[nisn] || {};
+                let jAlfa = s.tglAlfa.size, jSakit = s.tglSakit.size, jIzin = s.tglIzin.size;
 
-                if (s.alfa >= BATAS.alfa && s.alfa > (tr['Alfa'] || 0)) {
-                    dashboardCategoryData.Alfa.push({ nisn, nama: s.nama, kelas: s.kelas, jumlah: s.alfa, kategori: 'Alfa' });
+                if (jAlfa >= BATAS.alfa && jAlfa > (tr['Alfa'] || 0)) {
+                    dashboardCategoryData.Alfa.push({ nisn, nama: s.nama, kelas: s.kelas, jumlah: jAlfa, kategori: 'Alfa' });
+                    dashboardTanggalMap['Alfa_' + nisn] = Array.from(s.tglAlfa).sort();
                 }
-                if (s.sakit >= BATAS.sakit && s.sakit > (tr['Sakit'] || 0)) {
-                    dashboardCategoryData.Sakit.push({ nisn, nama: s.nama, kelas: s.kelas, jumlah: s.sakit, kategori: 'Sakit' });
+                if (jSakit >= BATAS.sakit && jSakit > (tr['Sakit'] || 0)) {
+                    dashboardCategoryData.Sakit.push({ nisn, nama: s.nama, kelas: s.kelas, jumlah: jSakit, kategori: 'Sakit' });
+                    dashboardTanggalMap['Sakit_' + nisn] = Array.from(s.tglSakit).sort();
                 }
-                if (s.izin >= BATAS.izin && s.izin > (tr['Izin'] || 0)) {
-                    dashboardCategoryData.Izin.push({ nisn, nama: s.nama, kelas: s.kelas, jumlah: s.izin, kategori: 'Izin' });
+                if (jIzin >= BATAS.izin && jIzin > (tr['Izin'] || 0)) {
+                    dashboardCategoryData.Izin.push({ nisn, nama: s.nama, kelas: s.kelas, jumlah: jIzin, kategori: 'Izin' });
+                    dashboardTanggalMap['Izin_' + nisn] = Array.from(s.tglIzin).sort();
                 }
             }
 
@@ -997,7 +1027,9 @@
                 <td class="px-4 py-3">${x.nisn||'-'}</td>
                 <td class="px-4 py-3 font-medium">${x.nama||'-'}</td>
                 <td class="px-4 py-3">${x.kelas||'-'}</td>
-                <td class="px-4 py-3 text-center font-bold text-gray-700">${x.jumlah}</td>
+                <td class="px-4 py-3 text-center">
+                    <button onclick="showTanggalDashboard('${x.kategori}', '${x.nisn}', '${x.nama.replace(/'/g,"\\'")}')" class="font-bold text-gray-700 underline decoration-dotted hover:text-indigo-600 smooth-transition" title="Klik untuk lihat tanggal">${x.jumlah}</button>
+                </td>
                 <td class="px-4 py-3 text-center">
                     <button onclick="lakukanTindakan('${x.nisn}', '${x.nama.replace(/'/g,"\\'")}', '${x.kategori}', ${x.jumlah})" class="px-3 py-1.5 bg-indigo-600 text-white hover:bg-indigo-700 rounded-lg text-xs font-bold smooth-transition whitespace-nowrap">
                         <i class="fas fa-handshake"></i> Tindakan
@@ -1005,6 +1037,45 @@
                 </td>
             </tr>`).join("");
             document.getElementById('tabelDetailDashboard').innerHTML = html || `<tr><td colspan="5" class="px-4 py-6 text-center text-gray-500">Tidak ada siswa pada kategori ini.</td></tr>`;
+        }
+
+        // ======================= MODAL DETAIL TANGGAL (GENERIK) =======================
+        // Dipakai oleh Dashboard (Alfa/Sakit/Izin) dan menu Keterlambatan.
+        // Daftar tanggal yang ditampilkan sudah dijamin unik (di-dedup saat data dikumpulkan).
+        function formatTanggalIndo(ymd) {
+            if(!ymd) return '-';
+            let d = new Date(ymd + 'T00:00:00');
+            if(isNaN(d.getTime())) return ymd;
+            const hari = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+            const bulan = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+            return `${hari[d.getDay()]}, ${d.getDate()} ${bulan[d.getMonth()]} ${d.getFullYear()}`;
+        }
+
+        function tampilkanTanggalSiswa(judul, subjudul, tanggalArr) {
+            // Dedup + urutkan sebagai jaring pengaman tambahan meskipun sumber data seharusnya sudah unik.
+            let unik = Array.from(new Set((tanggalArr || []).filter(Boolean))).sort();
+            document.getElementById('titleModalTanggalSiswa').innerHTML = `<i class="fas fa-calendar-day text-indigo-500"></i> ${judul}`;
+            document.getElementById('subtitleModalTanggalSiswa').innerText = subjudul;
+            let html = unik.map((t, i) => `<tr class="border-b hover:bg-gray-50"><td class="px-4 py-2 text-center text-gray-500">${i+1}</td><td class="px-4 py-2 font-medium">${formatTanggalIndo(t)}</td></tr>`).join("");
+            document.getElementById('tabelTanggalSiswa').innerHTML = html || `<tr><td colspan="2" class="px-4 py-6 text-center text-gray-500">Tidak ada data tanggal.</td></tr>`;
+            document.getElementById('modalTanggalSiswa').classList.remove('hidden');
+            setTimeout(() => document.getElementById('modalBoxTanggalSiswa').classList.remove('scale-95'), 10);
+        }
+
+        function tutupModalTanggalSiswa() {
+            document.getElementById('modalBoxTanggalSiswa').classList.add('scale-95');
+            setTimeout(() => document.getElementById('modalTanggalSiswa').classList.add('hidden'), 300);
+        }
+
+        function showTanggalDashboard(kategori, nisn, nama) {
+            let dates = dashboardTanggalMap[kategori + '_' + nisn] || [];
+            let info = labelKategoriDashboard(kategori);
+            tampilkanTanggalSiswa(`Tanggal ${info.label} - ${nama}`, `Daftar tanggal ${info.label.toLowerCase()} untuk ${nama} (tanpa duplikat).`, dates);
+        }
+
+        function showTanggalTelat(key, nama) {
+            let dates = telatTanggalMap[key] || [];
+            tampilkanTanggalSiswa(`Tanggal Keterlambatan - ${nama}`, `Daftar tanggal keterlambatan ${nama} (tanpa duplikat).`, dates);
         }
 
         function tutupModalDashboard() {
@@ -1268,6 +1339,7 @@
         let rawDataTelat = [];
         let rawTindakTelat = [];
         let telatAksiData = [];
+        let telatTanggalMap = {};
         const BATAS_TELAT = 3;
 
         // Ambil bagian tanggal saja (yyyy-mm-dd) dari string timestamp/ISO, dipakai untuk deduplikasi.
@@ -1324,13 +1396,23 @@
         function applyFilterTelat() {
             let f = document.getElementById('filterKelasTelat').value;
 
+            // Bangun telatTanggalMap & telatAksiData lebih dulu (dari data keseluruhan, anti duplikat).
+            hitungTelatAksi();
+
             // Hitungan (total & peringkat) memakai data yang sudah di-dedup per (NISN/nama + tanggal).
             let uniqueAll = dataTelatUnik(rawDataTelat);
             let uniqueFiltered = uniqueAll.filter(r => f === "Semua" || r[3] === f);
 
             let sRekap = {};
             uniqueFiltered.forEach(r => {
-                if(r[1] && r[2]) { let k = r[1]+"|"+r[2]+"|"+r[3]; sRekap[k] = (sRekap[k]||0)+1; }
+                let nisn = (r[1] || "").toString().trim();
+                let nama = (r[2] || "").toString().trim();
+                let kelas = (r[3] || "").toString().trim();
+                if (!nisn && !nama) return;
+                let dispKey = nisn+"|"+nama+"|"+kelas;
+                let lookupKey = nisn || nama;
+                if(!sRekap[dispKey]) sRekap[dispKey] = { n: nisn, nm: nama, kl: kelas, j: 0, lookupKey };
+                sRekap[dispKey].j++;
             });
             document.getElementById('totalTelat').innerText = uniqueFiltered.length;
 
@@ -1342,18 +1424,18 @@
             }).join("");
             document.getElementById('tabelTelat').innerHTML = tbodyD || "<tr><td colspan='6' class='p-4 text-center text-gray-400'>Tidak ada data.</td></tr>";
 
-            let arr = Object.keys(sRekap).map(k => ({n:k.split("|")[0], nm:k.split("|")[1], kl:k.split("|")[2], j:sRekap[k]})).sort((a,b)=>b.j-a.j);
-            let tbodyR = arr.map((x,i) => `<tr class="border-b hover:bg-orange-50"><td class="px-4 py-3 text-center text-gray-500 font-bold">${i<3 ? ['🥇','🥈','🥉'][i] : i+1}</td><td class="px-4 py-3">${x.n}</td><td class="px-4 py-3 font-medium">${x.nm}</td><td class="px-4 py-3">${x.kl}</td><td class="px-4 py-3 text-center text-orange-600 font-bold">${x.j}</td></tr>`).join("");
+            let arr = Object.values(sRekap).sort((a,b)=>b.j-a.j);
+            let tbodyR = arr.map((x,i) => `<tr class="border-b hover:bg-orange-50"><td class="px-4 py-3 text-center text-gray-500 font-bold">${i<3 ? ['🥇','🥈','🥉'][i] : i+1}</td><td class="px-4 py-3">${x.n||'-'}</td><td class="px-4 py-3 font-medium">${x.nm||'-'}</td><td class="px-4 py-3">${x.kl||'-'}</td><td class="px-4 py-3 text-center"><button onclick="showTanggalTelat('${x.lookupKey.replace(/'/g,"\\'")}', '${(x.nm||'-').replace(/'/g,"\\'")}')" class="font-bold text-orange-600 underline decoration-dotted hover:text-orange-800 smooth-transition" title="Klik untuk lihat tanggal">${x.j}</button></td></tr>`).join("");
             document.getElementById('tabelRekapSiswaTelat').innerHTML = tbodyR || "<tr><td colspan='5' class='p-4 text-center text-gray-400'>Belum ada rekap.</td></tr>";
-
-            hitungTelatAksi();
         }
 
         // Peringatan "Perlu Tindakan": total keseluruhan (semua kelas, tidak terpengaruh filter kelas),
         // dihitung dari data unik per (NISN + tanggal) agar tidak double-count.
+        // Fungsi ini juga membangun telatTanggalMap (daftar tanggal unik per siswa) untuk drill-down.
         function hitungTelatAksi() {
             let uniqueAll = dataTelatUnik(rawDataTelat);
             let rekap = {};
+            telatTanggalMap = {};
             uniqueAll.forEach(r => {
                 let nisn = (r[1] || "").toString().trim();
                 let nama = (r[2] || "").toString().trim();
@@ -1362,6 +1444,8 @@
                 let key = nisn || nama;
                 if (!rekap[key]) rekap[key] = { nisn, nama, kelas, jumlah: 0 };
                 rekap[key].jumlah++;
+                if (!telatTanggalMap[key]) telatTanggalMap[key] = [];
+                telatTanggalMap[key].push(tanggalKeyOnly(r[0]));
             });
 
             let tracker = {};
@@ -1393,7 +1477,9 @@
                 <td class="px-4 py-3">${x.nisn||'-'}</td>
                 <td class="px-4 py-3 font-medium">${x.nama||'-'}</td>
                 <td class="px-4 py-3">${x.kelas||'-'}</td>
-                <td class="px-4 py-3 text-center font-bold text-gray-700">${x.jumlah}</td>
+                <td class="px-4 py-3 text-center">
+                    <button onclick="showTanggalTelat('${(x.nisn||x.nama).replace(/'/g,"\\'")}', '${x.nama.replace(/'/g,"\\'")}')" class="font-bold text-gray-700 underline decoration-dotted hover:text-indigo-600 smooth-transition" title="Klik untuk lihat tanggal">${x.jumlah}</button>
+                </td>
                 <td class="px-4 py-3 text-center">
                     <button onclick="lakukanTindakan('${x.nisn}', '${x.nama.replace(/'/g,"\\'")}', 'Terlambat', ${x.jumlah})" class="px-3 py-1.5 bg-indigo-600 text-white hover:bg-indigo-700 rounded-lg text-xs font-bold smooth-transition whitespace-nowrap">
                         <i class="fas fa-handshake"></i> Tindakan
