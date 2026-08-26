@@ -165,6 +165,31 @@
             </div>
         </div>
 
+        <!-- Modal Detail Keterlambatan Perlu Tindakan -->
+        <div id="modalDetailTelatAksi" class="hidden fixed inset-0 bg-gray-900/50 z-50 flex items-center justify-center backdrop-blur-sm p-4">
+            <div class="bg-white p-6 rounded-2xl shadow-xl max-w-3xl w-full relative transform scale-95 transition-transform duration-300 origin-center flex flex-col max-h-[85vh]" id="modalBoxTelatAksi">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-bold text-gray-800 flex items-center gap-2"><i class="fas fa-clock text-orange-500"></i> Daftar Siswa - Perlu Tindakan Keterlambatan</h3>
+                    <button onclick="tutupModalTelatAksi()" class="text-gray-400 hover:text-red-500 smooth-transition"><i class="fas fa-times text-xl"></i></button>
+                </div>
+                <p class="text-xs text-gray-500 mb-3">Siswa dengan total keterlambatan &ge; 3 kali (unik per tanggal) yang belum ditindaklanjuti.</p>
+                <div class="overflow-y-auto flex-grow rounded-xl border border-gray-200">
+                    <table class="min-w-full divide-y divide-gray-200 text-sm">
+                        <thead class="bg-gray-50 sticky top-0">
+                            <tr>
+                                <th class="px-4 py-3 text-left font-bold text-gray-600">NISN</th>
+                                <th class="px-4 py-3 text-left font-bold text-gray-600">Nama Siswa</th>
+                                <th class="px-4 py-3 text-left font-bold text-gray-600">Kelas</th>
+                                <th class="px-4 py-3 text-center font-bold text-gray-600">Jumlah Terlambat</th>
+                                <th class="px-4 py-3 text-center font-bold text-gray-600">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabelDetailTelatAksi" class="bg-white divide-y divide-gray-100"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
         <!-- Modal Detail Daftar Siswa KMOB -->
         <div id="modalDetailKmob" class="hidden fixed inset-0 bg-gray-900/50 z-50 flex items-center justify-center backdrop-blur-sm">
             <div class="bg-white p-6 rounded-2xl shadow-xl max-w-2xl w-full mx-4 relative transform scale-95 transition-transform duration-300 origin-center flex flex-col max-h-[80vh]" id="modalBoxKmob">
@@ -224,12 +249,13 @@
                 <div class="bg-indigo-50 border border-indigo-100 rounded-xl p-4 mb-6 flex gap-3 items-start">
                     <i class="fas fa-info-circle text-indigo-500 mt-1"></i>
                     <p class="text-sm text-indigo-800">
-                        <b>Parameter Peringatan (Otomatis):</b> Alfa &ge; 3 kali, Sakit &ge; 7 kali, Izin &ge; 5 kali, Terlambat &ge; 3 kali.<br>
+                        <b>Parameter Peringatan (Otomatis, sumber data: DataAbsensi):</b> Alfa &ge; 3 kali, Sakit &ge; 7 kali, Izin &ge; 5 kali.<br>
                         Klik salah satu kartu di bawah untuk melihat daftar siswa, lalu klik <b>Tindakan</b> untuk menindaklanjuti. Siswa yang sudah ditindak akan otomatis hilang dari daftar peringatan.
+                        <span class="block mt-1 text-indigo-600"><i class="fas fa-info-circle"></i> Pemantauan keterlambatan kini ada di menu <b>Keterlambatan</b>.</span>
                     </p>
                 </div>
 
-                <div id="dashboardAlerts" class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                <div id="dashboardAlerts" class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div onclick="showDetailDashboard('Alfa')" class="cursor-pointer bg-white border-l-4 border-red-500 p-5 rounded-2xl shadow-sm hover:shadow-md hover:bg-gray-50 smooth-transition" title="Klik untuk lihat daftar siswa">
                         <div class="flex items-center gap-3">
                             <div class="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center">
@@ -265,18 +291,6 @@
                             </div>
                         </div>
                         <p class="text-xs text-gray-400 mt-3">Siswa &ge; 5 kali izin</p>
-                    </div>
-                    <div onclick="showDetailDashboard('Terlambat')" class="cursor-pointer bg-white border-l-4 border-orange-500 p-5 rounded-2xl shadow-sm hover:shadow-md hover:bg-gray-50 smooth-transition" title="Klik untuk lihat daftar siswa">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-orange-50 flex items-center justify-center">
-                                <i class="fas fa-clock text-orange-500 text-lg"></i>
-                            </div>
-                            <div>
-                                <p class="text-xs text-gray-500 font-bold uppercase mb-0.5">Keterlambatan</p>
-                                <h3 class="text-2xl font-black text-gray-800" id="countTerlambatDash">0</h3>
-                            </div>
-                        </div>
-                        <p class="text-xs text-gray-400 mt-3">Siswa &ge; 3 kali terlambat</p>
                     </div>
                 </div>
                 <div id="dashboardAllSafe" class="hidden text-center py-10 bg-white rounded-2xl border border-gray-200 border-dashed mt-4">
@@ -497,15 +511,33 @@
                     </div>
                 </div>
 
-                <div class="bg-white border-l-4 border-orange-500 p-6 rounded-xl shadow-sm mb-8 inline-block min-w-[250px]">
-                    <p class="text-sm text-gray-500 font-bold uppercase mb-1">Total Kejadian Terlambat</p>
-                    <div class="flex items-end gap-2">
-                        <h3 class="text-4xl font-black text-gray-800" id="totalTelat">0</h3><span class="text-gray-500 font-medium mb-1">kasus</span>
+                <div class="bg-indigo-50 border border-indigo-100 rounded-xl p-4 mb-6 flex gap-3 items-start">
+                    <i class="fas fa-info-circle text-indigo-500 mt-1"></i>
+                    <p class="text-sm text-indigo-800">
+                        <b>Parameter Peringatan (Otomatis):</b> Siswa dengan total keterlambatan &ge; 3 kali (dihitung dari jumlah hari unik, tidak menghitung ganda jika nama dan tanggalnya sama).<br>
+                        Klik kartu <b>Perlu Tindakan</b> untuk melihat daftar siswa, lalu klik <b>Tindakan</b> untuk menindaklanjuti.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8 max-w-2xl">
+                    <div class="bg-white border-l-4 border-orange-500 p-6 rounded-xl shadow-sm">
+                        <p class="text-sm text-gray-500 font-bold uppercase mb-1">Total Kejadian Terlambat</p>
+                        <div class="flex items-end gap-2">
+                            <h3 class="text-4xl font-black text-gray-800" id="totalTelat">0</h3><span class="text-gray-500 font-medium mb-1">kasus</span>
+                        </div>
+                        <p class="text-xs text-gray-400 mt-1">Sudah dihitung unik per siswa per tanggal</p>
+                    </div>
+                    <div onclick="showDetailTelatAksi()" class="cursor-pointer bg-white border-l-4 border-red-500 p-6 rounded-xl shadow-sm hover:shadow-md hover:bg-gray-50 smooth-transition" title="Klik untuk lihat daftar siswa">
+                        <p class="text-sm text-gray-500 font-bold uppercase mb-1">Perlu Tindakan</p>
+                        <div class="flex items-end gap-2">
+                            <h3 class="text-4xl font-black text-gray-800" id="countTelatAksi">0</h3><span class="text-gray-500 font-medium mb-1">siswa</span>
+                        </div>
+                        <p class="text-xs text-gray-400 mt-1">Total keterlambatan &ge; 3 kali</p>
                     </div>
                 </div>
 
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-8">
-                    <h3 class="text-lg font-bold text-gray-800 mb-4 border-b pb-2 flex items-center gap-2"><i class="fas fa-list-ol text-orange-500"></i> Peringkat Keterlambatan Siswa</h3>
+                    <h3 class="text-lg font-bold text-gray-800 mb-4 border-b pb-2 flex items-center gap-2"><i class="fas fa-list-ol text-orange-500"></i> Peringkat Keterlambatan Siswa (Total Keseluruhan, Unik per Tanggal)</h3>
                     <div class="overflow-x-auto overflow-y-auto max-h-[400px] rounded-xl border border-gray-200">
                         <table class="min-w-full divide-y divide-gray-200 text-sm">
                             <thead class="bg-orange-50 sticky top-0 z-10">
@@ -646,9 +678,8 @@
         
         let windowDataKmobFiltered = []; 
         let rawDashboardAbsen = [];
-        let rawDashboardTelat = [];
         let rawDashboardTindak = [];
-        let dashboardCategoryData = { Alfa: [], Sakit: [], Izin: [], Terlambat: [] };
+        let dashboardCategoryData = { Alfa: [], Sakit: [], Izin: [] };
 
         function runBackend(funcName, args, callback) {
             fetch(API_URL, {
@@ -773,20 +804,19 @@
         }
 
         // ======================= DASHBOARD & SMART FILTER =======================
+        // Sumber data Dashboard HANYA sheet DataAbsensi (Alfa/Sakit/Izin).
+        // Keterlambatan dipindahkan sepenuhnya ke menu Keterlambatan.
         function loadDashboard() {
             setLoading(true, "Menganalisis data harian...");
             runBackend('getRekapAbsensi', [], function(resAbsensi) {
-                runBackend('getRekapKeterlambatan', [], function(resTelat) {
-                    runBackend('getDataTindakan', [], function(resTindakan) {
-                        setLoading(false);
-                        
-                        rawDashboardAbsen = resAbsensi && resAbsensi.details ? resAbsensi.details : [];
-                        rawDashboardTelat = resTelat || [];
-                        rawDashboardTindak = resTindakan || [];
-                        
-                        buildDashboardFilters();
-                        applyDashboardFilter();
-                    });
+                runBackend('getDataTindakan', [], function(resTindakan) {
+                    setLoading(false);
+                    
+                    rawDashboardAbsen = resAbsensi && resAbsensi.details ? resAbsensi.details : [];
+                    rawDashboardTindak = resTindakan || [];
+                    
+                    buildDashboardFilters();
+                    applyDashboardFilter();
                 });
             });
         }
@@ -807,7 +837,6 @@
             }
             
             tambahDataFilter(rawDashboardAbsen);
-            tambahDataFilter(rawDashboardTelat);
 
             // Filter Bulan
             let selBulan = document.getElementById('filterBulanDashboard');
@@ -874,13 +903,13 @@
             }
 
             let fAbsen = filterData(rawDashboardAbsen);
-            let fTelat = filterData(rawDashboardTelat);
             let fTindak = filterData(rawDashboardTindak);
 
-            prosesDataDashboard(fAbsen, fTelat, fTindak);
+            prosesDataDashboard(fAbsen, fTindak);
         }
 
-        function prosesDataDashboard(dataAbsen, dataTelat, dataTindakan) {
+        function prosesDataDashboard(dataAbsen, dataTindakan) {
+            // dataAbsen bersumber HANYA dari sheet DataAbsensi.
             let rekapSiswa = {}; 
             
             dataAbsen.forEach(r => {
@@ -893,20 +922,11 @@
                 let st = statusText ? statusText : ketText;
                 
                 if(!nisn) return;
-                if(!rekapSiswa[nisn]) rekapSiswa[nisn] = { nama: nama, kelas: kelas, alfa: 0, sakit: 0, izin: 0, telat: 0 };
+                if(!rekapSiswa[nisn]) rekapSiswa[nisn] = { nama: nama, kelas: kelas, alfa: 0, sakit: 0, izin: 0 };
                 
                 if(st === 'a' || st.includes('alfa') || st.includes('alpha')) rekapSiswa[nisn].alfa++;
                 else if(st === 's' || st.includes('sakit')) rekapSiswa[nisn].sakit++;
                 else if(st === 'i' || st.includes('izin') || st.includes('ijin')) rekapSiswa[nisn].izin++;
-            });
-
-            dataTelat.forEach(r => {
-                let nisn = (r[1] || "").toString().trim();
-                let nama = (r[2] || "").toString().trim();
-                let kelas = (r[3] || "").toString().trim();
-                if(!nisn) return;
-                if(!rekapSiswa[nisn]) rekapSiswa[nisn] = { nama: nama, kelas: kelas, alfa: 0, sakit: 0, izin: 0, telat: 0 };
-                rekapSiswa[nisn].telat++;
             });
 
             let tracker = {};
@@ -916,9 +936,9 @@
                 tracker[nisn][kategori] = jumlahDiakui;
             });
 
-            const BATAS = { alfa: 3, sakit: 7, izin: 5, telat: 3 };
+            const BATAS = { alfa: 3, sakit: 7, izin: 5 };
 
-            dashboardCategoryData = { Alfa: [], Sakit: [], Izin: [], Terlambat: [] };
+            dashboardCategoryData = { Alfa: [], Sakit: [], Izin: [] };
 
             for (let nisn in rekapSiswa) {
                 let s = rekapSiswa[nisn];
@@ -933,9 +953,6 @@
                 if (s.izin >= BATAS.izin && s.izin > (tr['Izin'] || 0)) {
                     dashboardCategoryData.Izin.push({ nisn, nama: s.nama, kelas: s.kelas, jumlah: s.izin, kategori: 'Izin' });
                 }
-                if (s.telat >= BATAS.telat && s.telat > (tr['Terlambat'] || 0)) {
-                    dashboardCategoryData.Terlambat.push({ nisn, nama: s.nama, kelas: s.kelas, jumlah: s.telat, kategori: 'Terlambat' });
-                }
             }
 
             // Urutkan dari jumlah pelanggaran terbanyak
@@ -944,9 +961,8 @@
             document.getElementById('countAlfaDash').innerText = dashboardCategoryData.Alfa.length;
             document.getElementById('countSakitDash').innerText = dashboardCategoryData.Sakit.length;
             document.getElementById('countIzinDash').innerText = dashboardCategoryData.Izin.length;
-            document.getElementById('countTerlambatDash').innerText = dashboardCategoryData.Terlambat.length;
 
-            let totalPeringatan = dashboardCategoryData.Alfa.length + dashboardCategoryData.Sakit.length + dashboardCategoryData.Izin.length + dashboardCategoryData.Terlambat.length;
+            let totalPeringatan = dashboardCategoryData.Alfa.length + dashboardCategoryData.Sakit.length + dashboardCategoryData.Izin.length;
             document.getElementById('dashboardAllSafe').classList.toggle('hidden', totalPeringatan !== 0);
 
             // Jika modal detail sedang terbuka untuk kategori ini, refresh isinya
@@ -960,8 +976,7 @@
         function labelKategoriDashboard(kategori) {
             if (kategori === 'Alfa') return { label: 'Alfa', warna: 'red', batas: '3 kali' };
             if (kategori === 'Sakit') return { label: 'Sakit', warna: 'yellow', batas: '7 kali' };
-            if (kategori === 'Izin') return { label: 'Izin', warna: 'blue', batas: '5 kali' };
-            return { label: 'Keterlambatan', warna: 'orange', batas: '3 kali' };
+            return { label: 'Izin', warna: 'blue', batas: '5 kali' };
         }
 
         function showDetailDashboard(kategori) {
@@ -1021,6 +1036,7 @@
             const { nisn, nama, kategori, jumlah } = dataTindakanAktif;
             tutupModalKonfirmasi();
             tutupModalDashboard();
+            tutupModalTelatAksi();
             setLoading(true, "Menyiapkan form kasus...");
             runBackend('simpanTindakan', [{nisn: nisn, kategori: kategori, jumlah: jumlah}], function(res) {
                 setLoading(false);
@@ -1250,39 +1266,148 @@
         }
 
         let rawDataTelat = [];
+        let rawTindakTelat = [];
+        let telatAksiData = [];
+        const BATAS_TELAT = 3;
+
+        // Ambil bagian tanggal saja (yyyy-mm-dd) dari string timestamp/ISO, dipakai untuk deduplikasi.
+        function tanggalKeyOnly(raw) {
+            if(!raw) return "";
+            let s = raw.toString();
+            if (s.includes("T")) return s.split("T")[0];
+            let d = new Date(s);
+            if(!isNaN(d.getTime())) return d.toISOString().split("T")[0];
+            return s.split(" ")[0];
+        }
+
+        // Kunci unik per kejadian keterlambatan: tanggal + (NISN atau nama jika NISN kosong).
+        // Ini mencegah baris duplikat (nama & tanggal sama) dihitung lebih dari sekali.
+        function kunciUnikTelat(r) {
+            let tgl = tanggalKeyOnly(r[0]);
+            let id = (r[1] || "").toString().trim().toLowerCase();
+            if (!id) id = (r[2] || "").toString().trim().toLowerCase();
+            return tgl + "_" + id;
+        }
+
+        function dataTelatUnik(rawArr) {
+            let seen = new Set();
+            let result = [];
+            rawArr.forEach(r => {
+                let key = kunciUnikTelat(r);
+                if (key === "_" || !key) return;
+                if (!seen.has(key)) {
+                    seen.add(key);
+                    result.push(r);
+                }
+            });
+            return result;
+        }
+
         function loadDataTelat() {
             setLoading(true);
             runBackend('getRekapKeterlambatan', [], function(res) {
-                setLoading(false);
                 rawDataTelat = res || [];
-                let kSet = new Set(); rawDataTelat.forEach(r => { if(r[3]) kSet.add(r[3]); });
-                let sel = document.getElementById('filterKelasTelat'); let cVal = sel.value;
-                sel.innerHTML = '<option value="Semua">Semua Kelas</option>';
-                Array.from(kSet).sort().forEach(k => { let opt=document.createElement('option'); opt.value=k; opt.text=k; sel.add(opt); });
-                if(Array.from(kSet).includes(cVal)) sel.value = cVal;
-                applyFilterTelat();
+                runBackend('getDataTindakan', [], function(resTindak) {
+                    setLoading(false);
+                    rawTindakTelat = resTindak || [];
+
+                    let kSet = new Set(); rawDataTelat.forEach(r => { if(r[3]) kSet.add(r[3]); });
+                    let sel = document.getElementById('filterKelasTelat'); let cVal = sel.value;
+                    sel.innerHTML = '<option value="Semua">Semua Kelas</option>';
+                    Array.from(kSet).sort().forEach(k => { let opt=document.createElement('option'); opt.value=k; opt.text=k; sel.add(opt); });
+                    if(Array.from(kSet).includes(cVal)) sel.value = cVal;
+                    applyFilterTelat();
+                });
             });
         }
 
         function applyFilterTelat() {
             let f = document.getElementById('filterKelasTelat').value;
-            let total = 0; let sRekap = {}; let tbodyD = "";
-            let rev = [...rawDataTelat].reverse();
 
-            rev.forEach(r => {
-                if(f === "Semua" || r[3] === f) {
-                    total++;
-                    if(r[1] && r[2]) { let k = r[1]+"|"+r[2]+"|"+r[3]; sRekap[k] = (sRekap[k]||0)+1; }
-                    let parsedDate = r[0] ? new Date(r[0]).toLocaleString('id-ID',{dateStyle:'short'}) : '-';
-                    tbodyD += `<tr class="border-b hover:bg-orange-50"><td class="px-4 py-3 text-xs text-gray-500">${parsedDate}</td><td class="px-4 py-3">${r[1]||'-'}</td><td class="px-4 py-3 font-medium">${r[2]||'-'}</td><td class="px-4 py-3">${r[3]||'-'}</td><td class="px-4 py-3 text-orange-600 font-bold">${r[4]||'-'}</td><td class="px-4 py-3">${r[5]||'-'}</td></tr>`;
-                }
+            // Hitungan (total & peringkat) memakai data yang sudah di-dedup per (NISN/nama + tanggal).
+            let uniqueAll = dataTelatUnik(rawDataTelat);
+            let uniqueFiltered = uniqueAll.filter(r => f === "Semua" || r[3] === f);
+
+            let sRekap = {};
+            uniqueFiltered.forEach(r => {
+                if(r[1] && r[2]) { let k = r[1]+"|"+r[2]+"|"+r[3]; sRekap[k] = (sRekap[k]||0)+1; }
             });
-            document.getElementById('totalTelat').innerText = total;
+            document.getElementById('totalTelat').innerText = uniqueFiltered.length;
+
+            // Log riwayat harian tetap menampilkan seluruh baris mentah (untuk transparansi audit).
+            let rev = [...rawDataTelat].reverse();
+            let tbodyD = rev.filter(r => f === "Semua" || r[3] === f).map(r => {
+                let parsedDate = r[0] ? new Date(r[0]).toLocaleString('id-ID',{dateStyle:'short'}) : '-';
+                return `<tr class="border-b hover:bg-orange-50"><td class="px-4 py-3 text-xs text-gray-500">${parsedDate}</td><td class="px-4 py-3">${r[1]||'-'}</td><td class="px-4 py-3 font-medium">${r[2]||'-'}</td><td class="px-4 py-3">${r[3]||'-'}</td><td class="px-4 py-3 text-orange-600 font-bold">${r[4]||'-'}</td><td class="px-4 py-3">${r[5]||'-'}</td></tr>`;
+            }).join("");
             document.getElementById('tabelTelat').innerHTML = tbodyD || "<tr><td colspan='6' class='p-4 text-center text-gray-400'>Tidak ada data.</td></tr>";
 
             let arr = Object.keys(sRekap).map(k => ({n:k.split("|")[0], nm:k.split("|")[1], kl:k.split("|")[2], j:sRekap[k]})).sort((a,b)=>b.j-a.j);
             let tbodyR = arr.map((x,i) => `<tr class="border-b hover:bg-orange-50"><td class="px-4 py-3 text-center text-gray-500 font-bold">${i<3 ? ['🥇','🥈','🥉'][i] : i+1}</td><td class="px-4 py-3">${x.n}</td><td class="px-4 py-3 font-medium">${x.nm}</td><td class="px-4 py-3">${x.kl}</td><td class="px-4 py-3 text-center text-orange-600 font-bold">${x.j}</td></tr>`).join("");
             document.getElementById('tabelRekapSiswaTelat').innerHTML = tbodyR || "<tr><td colspan='5' class='p-4 text-center text-gray-400'>Belum ada rekap.</td></tr>";
+
+            hitungTelatAksi();
+        }
+
+        // Peringatan "Perlu Tindakan": total keseluruhan (semua kelas, tidak terpengaruh filter kelas),
+        // dihitung dari data unik per (NISN + tanggal) agar tidak double-count.
+        function hitungTelatAksi() {
+            let uniqueAll = dataTelatUnik(rawDataTelat);
+            let rekap = {};
+            uniqueAll.forEach(r => {
+                let nisn = (r[1] || "").toString().trim();
+                let nama = (r[2] || "").toString().trim();
+                let kelas = (r[3] || "").toString().trim();
+                if (!nisn && !nama) return;
+                let key = nisn || nama;
+                if (!rekap[key]) rekap[key] = { nisn, nama, kelas, jumlah: 0 };
+                rekap[key].jumlah++;
+            });
+
+            let tracker = {};
+            rawTindakTelat.forEach(t => {
+                let nisn = t[1], kategori = t[2], jumlahDiakui = parseInt(t[3]);
+                if (kategori !== 'Terlambat') return;
+                if (!tracker[nisn] || jumlahDiakui > tracker[nisn]) tracker[nisn] = jumlahDiakui;
+            });
+
+            telatAksiData = Object.values(rekap)
+                .filter(s => s.jumlah >= BATAS_TELAT && s.jumlah > (tracker[s.nisn] || 0))
+                .sort((a,b) => b.jumlah - a.jumlah);
+
+            document.getElementById('countTelatAksi').innerText = telatAksiData.length;
+
+            if (!document.getElementById('modalDetailTelatAksi').classList.contains('hidden')) {
+                renderTabelDetailTelatAksi();
+            }
+        }
+
+        function showDetailTelatAksi() {
+            renderTabelDetailTelatAksi();
+            document.getElementById('modalDetailTelatAksi').classList.remove('hidden');
+            setTimeout(() => document.getElementById('modalBoxTelatAksi').classList.remove('scale-95'), 10);
+        }
+
+        function renderTabelDetailTelatAksi() {
+            let html = telatAksiData.map(x => `<tr class="border-b hover:bg-gray-50">
+                <td class="px-4 py-3">${x.nisn||'-'}</td>
+                <td class="px-4 py-3 font-medium">${x.nama||'-'}</td>
+                <td class="px-4 py-3">${x.kelas||'-'}</td>
+                <td class="px-4 py-3 text-center font-bold text-gray-700">${x.jumlah}</td>
+                <td class="px-4 py-3 text-center">
+                    <button onclick="lakukanTindakan('${x.nisn}', '${x.nama.replace(/'/g,"\\'")}', 'Terlambat', ${x.jumlah})" class="px-3 py-1.5 bg-indigo-600 text-white hover:bg-indigo-700 rounded-lg text-xs font-bold smooth-transition whitespace-nowrap">
+                        <i class="fas fa-handshake"></i> Tindakan
+                    </button>
+                </td>
+            </tr>`).join("");
+            document.getElementById('tabelDetailTelatAksi').innerHTML = html || `<tr><td colspan="5" class="px-4 py-6 text-center text-gray-500">Tidak ada siswa yang perlu ditindak.</td></tr>`;
+        }
+
+        function tutupModalTelatAksi() {
+            document.getElementById('modalBoxTelatAksi').classList.add('scale-95');
+            setTimeout(() => {
+                document.getElementById('modalDetailTelatAksi').classList.add('hidden');
+            }, 300);
         }
 
         let rawDataKmob = [];
