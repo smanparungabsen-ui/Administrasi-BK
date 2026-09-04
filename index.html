@@ -140,78 +140,6 @@
             </div>
         </div>
 
-        <!-- Modal Detail Tanggal (Sakit/Izin/Alfa/Terlambat per siswa) -->
-        <div id="modalTanggalSiswa" class="hidden fixed inset-0 bg-gray-900/60 z-[60] flex items-center justify-center backdrop-blur-sm p-4">
-            <div class="bg-white p-6 rounded-2xl shadow-xl max-w-md w-full relative transform scale-95 transition-transform duration-300 origin-center flex flex-col max-h-[80vh]" id="modalBoxTanggalSiswa">
-                <div class="flex justify-between items-center mb-2">
-                    <h3 class="text-lg font-bold text-gray-800 flex items-center gap-2" id="titleModalTanggalSiswa"><i class="fas fa-calendar-day text-indigo-500"></i> Detail Tanggal</h3>
-                    <button onclick="tutupModalTanggalSiswa()" class="text-gray-400 hover:text-red-500 smooth-transition"><i class="fas fa-times text-xl"></i></button>
-                </div>
-                <p class="text-xs text-gray-500 mb-3" id="subtitleModalTanggalSiswa"></p>
-                <div class="overflow-y-auto flex-grow rounded-xl border border-gray-200">
-                    <table class="min-w-full divide-y divide-gray-200 text-sm">
-                        <thead class="bg-gray-50 sticky top-0">
-                            <tr>
-                                <th class="px-4 py-2 text-center font-bold text-gray-600 w-12">No</th>
-                                <th class="px-4 py-2 text-left font-bold text-gray-600">Tanggal</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tabelTanggalSiswa" class="bg-white divide-y divide-gray-100"></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <!-- Modal Detail Dashboard Kategori (Sakit/Izin/Alfa) -->
-        <div id="modalDetailDashboard" class="hidden fixed inset-0 bg-gray-900/50 z-50 flex items-center justify-center backdrop-blur-sm p-4">
-            <div class="bg-white p-6 rounded-2xl shadow-xl max-w-3xl w-full relative transform scale-95 transition-transform duration-300 origin-center flex flex-col max-h-[85vh]" id="modalBoxDashboard">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-lg font-bold text-gray-800 flex items-center gap-2" id="titleModalDashboard"><i class="fas fa-exclamation-circle text-indigo-500"></i> Detail Siswa</h3>
-                    <button onclick="tutupModalDashboard()" class="text-gray-400 hover:text-red-500 smooth-transition"><i class="fas fa-times text-xl"></i></button>
-                </div>
-                <p class="text-xs text-gray-500 mb-3" id="subtitleModalDashboard">Daftar siswa yang telah melewati batas.</p>
-                <div class="overflow-y-auto flex-grow rounded-xl border border-gray-200">
-                    <table class="min-w-full divide-y divide-gray-200 text-sm">
-                        <thead class="bg-gray-50 sticky top-0">
-                            <tr>
-                                <th class="px-4 py-3 text-left font-bold text-gray-600">NISN</th>
-                                <th class="px-4 py-3 text-left font-bold text-gray-600">Nama Siswa</th>
-                                <th class="px-4 py-3 text-left font-bold text-gray-600">Kelas</th>
-                                <th class="px-4 py-3 text-center font-bold text-gray-600">Jumlah</th>
-                                <th class="px-4 py-3 text-center font-bold text-gray-600">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tabelDetailDashboard" class="bg-white divide-y divide-gray-100"></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <!-- Modal Detail Keterlambatan Perlu Tindakan -->
-        <div id="modalDetailTelatAksi" class="hidden fixed inset-0 bg-gray-900/50 z-50 flex items-center justify-center backdrop-blur-sm p-4">
-            <div class="bg-white p-6 rounded-2xl shadow-xl max-w-3xl w-full relative transform scale-95 transition-transform duration-300 origin-center flex flex-col max-h-[85vh]" id="modalBoxTelatAksi">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-lg font-bold text-gray-800 flex items-center gap-2"><i class="fas fa-clock text-orange-500"></i> Daftar Siswa - Perlu Tindakan Keterlambatan</h3>
-                    <button onclick="tutupModalTelatAksi()" class="text-gray-400 hover:text-red-500 smooth-transition"><i class="fas fa-times text-xl"></i></button>
-                </div>
-                <p class="text-xs text-gray-500 mb-3">Siswa dengan total keterlambatan &ge; 3 kali (unik per tanggal) yang belum ditindaklanjuti.</p>
-                <div class="overflow-y-auto flex-grow rounded-xl border border-gray-200">
-                    <table class="min-w-full divide-y divide-gray-200 text-sm">
-                        <thead class="bg-gray-50 sticky top-0">
-                            <tr>
-                                <th class="px-4 py-3 text-left font-bold text-gray-600">NISN</th>
-                                <th class="px-4 py-3 text-left font-bold text-gray-600">Nama Siswa</th>
-                                <th class="px-4 py-3 text-left font-bold text-gray-600">Kelas</th>
-                                <th class="px-4 py-3 text-center font-bold text-gray-600">Jumlah Terlambat</th>
-                                <th class="px-4 py-3 text-center font-bold text-gray-600">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tabelDetailTelatAksi" class="bg-white divide-y divide-gray-100"></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
         <!-- Modal Detail Daftar Siswa KMOB -->
         <div id="modalDetailKmob" class="hidden fixed inset-0 bg-gray-900/50 z-50 flex items-center justify-center backdrop-blur-sm">
             <div class="bg-white p-6 rounded-2xl shadow-xl max-w-2xl w-full mx-4 relative transform scale-95 transition-transform duration-300 origin-center flex flex-col max-h-[80vh]" id="modalBoxKmob">
@@ -250,6 +178,7 @@
                                     <option value="Semua">Semua Waktu</option>
                                 </select>
                             </div>
+                            <!-- FITUR BARU: FILTER KELAS DI DASHBOARD -->
                             <div class="flex items-center bg-gray-50 border border-gray-300 rounded-lg px-3 py-1.5 shadow-sm">
                                 <i class="fas fa-filter text-gray-400 mr-2"></i>
                                 <select id="filterKelasDashboard" onchange="applyDashboardFilter()" class="bg-transparent focus:outline-none text-sm font-semibold text-gray-700 w-32">
@@ -271,55 +200,17 @@
                 <div class="bg-indigo-50 border border-indigo-100 rounded-xl p-4 mb-6 flex gap-3 items-start">
                     <i class="fas fa-info-circle text-indigo-500 mt-1"></i>
                     <p class="text-sm text-indigo-800">
-                        <b>Parameter Peringatan (Otomatis, sumber data: DataAbsensi):</b> Alfa &ge; 3 kali, Sakit &ge; 7 kali, Izin &ge; 5 kali.<br>
-                        Hanya menghitung hari <b>Senin&ndash;Jumat</b> dan bukan tanggal merah (Sabtu, Minggu, serta hari libur di sheet "HariLibur" tidak dihitung).<br>
-                        Klik salah satu kartu di bawah untuk melihat daftar siswa, lalu klik <b>Tindakan</b> untuk menindaklanjuti. Siswa yang sudah ditindak akan otomatis hilang dari daftar peringatan.
-                        <span class="block mt-1 text-indigo-600"><i class="fas fa-info-circle"></i> Pemantauan keterlambatan kini ada di menu <b>Keterlambatan</b>.</span>
+                        <b>Parameter Peringatan (Otomatis):</b> Alfa &ge; 3 kali, Sakit &ge; 7 kali, Izin &ge; 5 kali, Terlambat &ge; 3 kali.<br>
+                        Klik tombol <b>Lakukan Tindakan</b> untuk menindaklanjuti, data peringatan akan otomatis dihapus dari layar ini.
                     </p>
                 </div>
 
-                <div id="dashboardAlerts" class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    <div onclick="showDetailDashboard('Alfa')" class="cursor-pointer bg-white border-l-4 border-red-500 p-5 rounded-2xl shadow-sm hover:shadow-md hover:bg-gray-50 smooth-transition" title="Klik untuk lihat daftar siswa">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center">
-                                <i class="fas fa-exclamation-circle text-red-500 text-lg"></i>
-                            </div>
-                            <div>
-                                <p class="text-xs text-gray-500 font-bold uppercase mb-0.5">Alfa</p>
-                                <h3 class="text-2xl font-black text-gray-800" id="countAlfaDash">0</h3>
-                            </div>
-                        </div>
-                        <p class="text-xs text-gray-400 mt-3">Siswa &ge; 3 kali alfa</p>
+                <div id="dashboardAlerts" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div class="col-span-full text-center py-10 bg-white rounded-2xl border border-gray-200 border-dashed">
+                        <i class="fas fa-shield-check text-4xl text-green-400 mb-3"></i>
+                        <h3 class="font-bold text-gray-600">Semua Aman</h3>
+                        <p class="text-sm text-gray-400">Belum ada siswa yang melampaui batas pelanggaran pada bulan ini.</p>
                     </div>
-                    <div onclick="showDetailDashboard('Sakit')" class="cursor-pointer bg-white border-l-4 border-yellow-400 p-5 rounded-2xl shadow-sm hover:shadow-md hover:bg-gray-50 smooth-transition" title="Klik untuk lihat daftar siswa">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-yellow-50 flex items-center justify-center">
-                                <i class="fas fa-exclamation-circle text-yellow-500 text-lg"></i>
-                            </div>
-                            <div>
-                                <p class="text-xs text-gray-500 font-bold uppercase mb-0.5">Sakit</p>
-                                <h3 class="text-2xl font-black text-gray-800" id="countSakitDash">0</h3>
-                            </div>
-                        </div>
-                        <p class="text-xs text-gray-400 mt-3">Siswa &ge; 7 kali sakit</p>
-                    </div>
-                    <div onclick="showDetailDashboard('Izin')" class="cursor-pointer bg-white border-l-4 border-blue-500 p-5 rounded-2xl shadow-sm hover:shadow-md hover:bg-gray-50 smooth-transition" title="Klik untuk lihat daftar siswa">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center">
-                                <i class="fas fa-exclamation-circle text-blue-500 text-lg"></i>
-                            </div>
-                            <div>
-                                <p class="text-xs text-gray-500 font-bold uppercase mb-0.5">Izin</p>
-                                <h3 class="text-2xl font-black text-gray-800" id="countIzinDash">0</h3>
-                            </div>
-                        </div>
-                        <p class="text-xs text-gray-400 mt-3">Siswa &ge; 5 kali izin</p>
-                    </div>
-                </div>
-                <div id="dashboardAllSafe" class="hidden text-center py-10 bg-white rounded-2xl border border-gray-200 border-dashed mt-4">
-                    <i class="fas fa-shield-check text-4xl text-green-400 mb-3"></i>
-                    <h3 class="font-bold text-gray-600">Semua Aman</h3>
-                    <p class="text-sm text-gray-400">Belum ada siswa yang melampaui batas pelanggaran sesuai filter ini.</p>
                 </div>
             </section>
 
@@ -458,14 +349,18 @@
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
                     <div>
                         <h2 class="text-2xl font-bold text-gray-800"><i class="fas fa-calendar-check text-indigo-500 mr-2"></i> Rekapitulasi Absensi</h2>
-                        <p class="text-sm text-gray-500">Monitoring kehadiran harian siswa. Hanya hari Senin&ndash;Jumat dan bukan tanggal merah yang dihitung.</p>
+                        <p class="text-sm text-gray-500">Monitoring kehadiran harian siswa.</p>
                     </div>
-                    <div class="flex items-center gap-2">
-                        <i class="fas fa-filter text-gray-400"></i>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <i class="fas fa-calendar-alt text-gray-400"></i>
+                        <select id="filterBulanAbsensi" onchange="applyFilterAbsensi()" class="pl-3 pr-8 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 font-semibold text-gray-700 bg-white">
+                            <option value="Semua">Semua Bulan</option>
+                        </select>
+                        <i class="fas fa-filter text-gray-400 ml-2"></i>
                         <select id="filterKelasAbsensi" onchange="applyFilterAbsensi()" class="pl-3 pr-8 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 font-semibold text-gray-700 bg-white">
                             <option value="Semua">Semua Kelas</option>
                         </select>
-                        <button onclick="loadDataAbsensi()" class="p-2 bg-white border border-gray-300 rounded-xl hover:bg-gray-50 text-gray-600"><i class="fas fa-sync-alt"></i></button>
+                        <button onclick="loadDataAbsensi()" class="p-2 bg-white border border-gray-300 rounded-xl hover:bg-gray-50 text-gray-600 ml-1"><i class="fas fa-sync-alt"></i></button>
                     </div>
                 </div>
 
@@ -475,6 +370,14 @@
                     <div class="bg-white border-l-4 border-blue-500 p-4 rounded-xl shadow-sm"><p class="text-xs text-gray-500 font-bold uppercase mb-1">Izin</p><h3 class="text-2xl font-black text-gray-800" id="rekapIzin">0</h3></div>
                     <div class="bg-white border-l-4 border-red-500 p-4 rounded-xl shadow-sm"><p class="text-xs text-gray-500 font-bold uppercase mb-1">Alfa</p><h3 class="text-2xl font-black text-gray-800" id="rekapAlfa">0</h3></div>
                     <div class="bg-white border-l-4 border-purple-500 p-4 rounded-xl shadow-sm"><p class="text-xs text-gray-500 font-bold uppercase mb-1">Dispen</p><h3 class="text-2xl font-black text-gray-800" id="rekapDispen">0</h3></div>
+                </div>
+
+                <!-- TABEL KALENDER ABSENSI BULANAN (FITUR BARU) -->
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-8">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4 border-b pb-2 flex items-center gap-2"><i class="fas fa-table text-indigo-500"></i> Kalender Absensi Bulanan</h3>
+                    <div id="containerKalenderAbsensi">
+                        <p class="text-center text-gray-500 py-4">Memuat kalender...</p>
+                    </div>
                 </div>
 
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-8">
@@ -534,34 +437,15 @@
                     </div>
                 </div>
 
-                <div class="bg-indigo-50 border border-indigo-100 rounded-xl p-4 mb-6 flex gap-3 items-start">
-                    <i class="fas fa-info-circle text-indigo-500 mt-1"></i>
-                    <p class="text-sm text-indigo-800">
-                        <b>Parameter Peringatan (Otomatis):</b> Siswa dengan total keterlambatan &ge; 3 kali (dihitung dari jumlah hari unik, tidak menghitung ganda jika nama dan tanggalnya sama).<br>
-                        Hanya menghitung hari <b>Senin&ndash;Jumat</b> dan bukan tanggal merah (Sabtu, Minggu, serta hari libur di sheet "HariLibur" tidak dihitung).<br>
-                        Klik kartu <b>Perlu Tindakan</b> untuk melihat daftar siswa, lalu klik <b>Tindakan</b> untuk menindaklanjuti.
-                    </p>
-                </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8 max-w-2xl">
-                    <div class="bg-white border-l-4 border-orange-500 p-6 rounded-xl shadow-sm">
-                        <p class="text-sm text-gray-500 font-bold uppercase mb-1">Total Kejadian Terlambat</p>
-                        <div class="flex items-end gap-2">
-                            <h3 class="text-4xl font-black text-gray-800" id="totalTelat">0</h3><span class="text-gray-500 font-medium mb-1">kasus</span>
-                        </div>
-                        <p class="text-xs text-gray-400 mt-1">Sudah dihitung unik per siswa per tanggal</p>
-                    </div>
-                    <div onclick="showDetailTelatAksi()" class="cursor-pointer bg-white border-l-4 border-red-500 p-6 rounded-xl shadow-sm hover:shadow-md hover:bg-gray-50 smooth-transition" title="Klik untuk lihat daftar siswa">
-                        <p class="text-sm text-gray-500 font-bold uppercase mb-1">Perlu Tindakan</p>
-                        <div class="flex items-end gap-2">
-                            <h3 class="text-4xl font-black text-gray-800" id="countTelatAksi">0</h3><span class="text-gray-500 font-medium mb-1">siswa</span>
-                        </div>
-                        <p class="text-xs text-gray-400 mt-1">Total keterlambatan &ge; 3 kali</p>
+                <div class="bg-white border-l-4 border-orange-500 p-6 rounded-xl shadow-sm mb-8 inline-block min-w-[250px]">
+                    <p class="text-sm text-gray-500 font-bold uppercase mb-1">Total Kejadian Terlambat</p>
+                    <div class="flex items-end gap-2">
+                        <h3 class="text-4xl font-black text-gray-800" id="totalTelat">0</h3><span class="text-gray-500 font-medium mb-1">kasus</span>
                     </div>
                 </div>
 
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-8">
-                    <h3 class="text-lg font-bold text-gray-800 mb-4 border-b pb-2 flex items-center gap-2"><i class="fas fa-list-ol text-orange-500"></i> Peringkat Keterlambatan Siswa (Total Keseluruhan, Unik per Tanggal)</h3>
+                    <h3 class="text-lg font-bold text-gray-800 mb-4 border-b pb-2 flex items-center gap-2"><i class="fas fa-list-ol text-orange-500"></i> Peringkat Keterlambatan Siswa</h3>
                     <div class="overflow-x-auto overflow-y-auto max-h-[400px] rounded-xl border border-gray-200">
                         <table class="min-w-full divide-y divide-gray-200 text-sm">
                             <thead class="bg-orange-50 sticky top-0 z-10">
@@ -702,34 +586,8 @@
         
         let windowDataKmobFiltered = []; 
         let rawDashboardAbsen = [];
+        let rawDashboardTelat = [];
         let rawDashboardTindak = [];
-        let dashboardCategoryData = { Alfa: [], Sakit: [], Izin: [] };
-        let dashboardTanggalMap = {};
-
-        // ======================= HARI LIBUR / TANGGAL MERAH =======================
-        // Daftar hari libur diambil dari sheet "HariLibur" (dikelola admin).
-        // Hanya hari Senin-Jumat DAN yang bukan tanggal merah yang dianggap valid sebagai hari absensi.
-        let hariLiburSet = new Set();
-
-        function loadHariLibur(callback) {
-            runBackend('getHariLibur', [], function(res) {
-                hariLiburSet = new Set((res || []).map(d => tanggalKeyOnly(d)).filter(Boolean));
-                if (callback) callback();
-            });
-        }
-
-        // Cek apakah suatu tanggal (raw dari sheet) adalah hari sekolah yang valid untuk dihitung.
-        function isHariSekolahValid(rawTanggal) {
-            if (!rawTanggal) return false;
-            let key = tanggalKeyOnly(rawTanggal);
-            if (!key) return false;
-            let d = new Date(key + 'T00:00:00');
-            if (isNaN(d.getTime())) return false;
-            let hari = d.getDay(); // 0 = Minggu, 6 = Sabtu
-            if (hari === 0 || hari === 6) return false; // lewati Sabtu & Minggu
-            if (hariLiburSet.has(key)) return false; // lewati tanggal merah
-            return true;
-        }
 
         function runBackend(funcName, args, callback) {
             fetch(API_URL, {
@@ -817,11 +675,7 @@
                     generatePenyelesaiCheckbox(res.staff);
                 }
             });
-            // Muat daftar hari libur/tanggal merah dulu, baru buka tab Dashboard,
-            // supaya perhitungan Alfa/Sakit/Izin langsung mengecualikan Sabtu, Minggu & tanggal merah.
-            loadHariLibur(function() {
-                switchTab('dashboard');
-            });
+            switchTab('dashboard');
         }
 
         function switchTab(tabId) {
@@ -858,19 +712,20 @@
         }
 
         // ======================= DASHBOARD & SMART FILTER =======================
-        // Sumber data Dashboard HANYA sheet DataAbsensi (Alfa/Sakit/Izin).
-        // Keterlambatan dipindahkan sepenuhnya ke menu Keterlambatan.
         function loadDashboard() {
             setLoading(true, "Menganalisis data harian...");
             runBackend('getRekapAbsensi', [], function(resAbsensi) {
-                runBackend('getDataTindakan', [], function(resTindakan) {
-                    setLoading(false);
-                    
-                    rawDashboardAbsen = resAbsensi && resAbsensi.details ? resAbsensi.details : [];
-                    rawDashboardTindak = resTindakan || [];
-                    
-                    buildDashboardFilters();
-                    applyDashboardFilter();
+                runBackend('getRekapKeterlambatan', [], function(resTelat) {
+                    runBackend('getDataTindakan', [], function(resTindakan) {
+                        setLoading(false);
+                        
+                        rawDashboardAbsen = resAbsensi && resAbsensi.details ? resAbsensi.details : [];
+                        rawDashboardTelat = resTelat || [];
+                        rawDashboardTindak = resTindakan || [];
+                        
+                        buildDashboardFilters();
+                        applyDashboardFilter();
+                    });
                 });
             });
         }
@@ -891,6 +746,7 @@
             }
             
             tambahDataFilter(rawDashboardAbsen);
+            tambahDataFilter(rawDashboardTelat);
 
             // Filter Bulan
             let selBulan = document.getElementById('filterBulanDashboard');
@@ -957,19 +813,16 @@
             }
 
             let fAbsen = filterData(rawDashboardAbsen);
+            let fTelat = filterData(rawDashboardTelat);
             let fTindak = filterData(rawDashboardTindak);
 
-            prosesDataDashboard(fAbsen, fTindak);
+            prosesDataDashboard(fAbsen, fTelat, fTindak);
         }
 
-        function prosesDataDashboard(dataAbsen, dataTindakan) {
-            // dataAbsen bersumber HANYA dari sheet DataAbsensi.
-            // Jumlah dihitung dari TANGGAL UNIK per siswa per kategori (anti duplikat).
+        function prosesDataDashboard(dataAbsen, dataTelat, dataTindakan) {
             let rekapSiswa = {}; 
             
             dataAbsen.forEach(r => {
-                if (!isHariSekolahValid(r[0])) return; // lewati Sabtu, Minggu, dan tanggal merah
-
                 let nisn = (r[1] || "").toString().trim();
                 let nama = (r[2] || "").toString().trim();
                 let kelas = (r[3] || "").toString().trim(); 
@@ -977,14 +830,22 @@
                 let statusText = (r[4] || "").toString().toLowerCase().trim();
                 let ketText = (r[5] || "").toString().toLowerCase().trim();
                 let st = statusText ? statusText : ketText;
-                let tgl = tanggalKeyOnly(r[0]);
                 
                 if(!nisn) return;
-                if(!rekapSiswa[nisn]) rekapSiswa[nisn] = { nama: nama, kelas: kelas, tglAlfa: new Set(), tglSakit: new Set(), tglIzin: new Set() };
+                if(!rekapSiswa[nisn]) rekapSiswa[nisn] = { nama: nama, kelas: kelas, alfa: 0, sakit: 0, izin: 0, telat: 0 };
                 
-                if(st === 'a' || st.includes('alfa') || st.includes('alpha')) rekapSiswa[nisn].tglAlfa.add(tgl);
-                else if(st === 's' || st.includes('sakit')) rekapSiswa[nisn].tglSakit.add(tgl);
-                else if(st === 'i' || st.includes('izin') || st.includes('ijin')) rekapSiswa[nisn].tglIzin.add(tgl);
+                if(st === 'a' || st.includes('alfa') || st.includes('alpha')) rekapSiswa[nisn].alfa++;
+                else if(st === 's' || st.includes('sakit')) rekapSiswa[nisn].sakit++;
+                else if(st === 'i' || st.includes('izin') || st.includes('ijin')) rekapSiswa[nisn].izin++;
+            });
+
+            dataTelat.forEach(r => {
+                let nisn = (r[1] || "").toString().trim();
+                let nama = (r[2] || "").toString().trim();
+                let kelas = (r[3] || "").toString().trim();
+                if(!nisn) return;
+                if(!rekapSiswa[nisn]) rekapSiswa[nisn] = { nama: nama, kelas: kelas, alfa: 0, sakit: 0, izin: 0, telat: 0 };
+                rekapSiswa[nisn].telat++;
             });
 
             let tracker = {};
@@ -994,129 +855,60 @@
                 tracker[nisn][kategori] = jumlahDiakui;
             });
 
-            const BATAS = { alfa: 3, sakit: 7, izin: 5 };
+            let container = document.getElementById('dashboardAlerts');
+            container.innerHTML = "";
+            let adaPeringatan = false;
 
-            dashboardCategoryData = { Alfa: [], Sakit: [], Izin: [] };
-            dashboardTanggalMap = {};
+            const BATAS = { alfa: 3, sakit: 7, izin: 5, telat: 3 };
 
             for (let nisn in rekapSiswa) {
                 let s = rekapSiswa[nisn];
                 let tr = tracker[nisn] || {};
-                let jAlfa = s.tglAlfa.size, jSakit = s.tglSakit.size, jIzin = s.tglIzin.size;
 
-                if (jAlfa >= BATAS.alfa && jAlfa > (tr['Alfa'] || 0)) {
-                    dashboardCategoryData.Alfa.push({ nisn, nama: s.nama, kelas: s.kelas, jumlah: jAlfa, kategori: 'Alfa' });
-                    dashboardTanggalMap['Alfa_' + nisn] = Array.from(s.tglAlfa).sort();
-                }
-                if (jSakit >= BATAS.sakit && jSakit > (tr['Sakit'] || 0)) {
-                    dashboardCategoryData.Sakit.push({ nisn, nama: s.nama, kelas: s.kelas, jumlah: jSakit, kategori: 'Sakit' });
-                    dashboardTanggalMap['Sakit_' + nisn] = Array.from(s.tglSakit).sort();
-                }
-                if (jIzin >= BATAS.izin && jIzin > (tr['Izin'] || 0)) {
-                    dashboardCategoryData.Izin.push({ nisn, nama: s.nama, kelas: s.kelas, jumlah: jIzin, kategori: 'Izin' });
-                    dashboardTanggalMap['Izin_' + nisn] = Array.from(s.tglIzin).sort();
-                }
+                if (s.alfa >= BATAS.alfa && s.alfa > (tr['Alfa'] || 0)) { container.innerHTML += buatKartuAlert(nisn, s.nama, s.kelas, 'Alfa', s.alfa, 'red'); adaPeringatan = true; }
+                if (s.sakit >= BATAS.sakit && s.sakit > (tr['Sakit'] || 0)) { container.innerHTML += buatKartuAlert(nisn, s.nama, s.kelas, 'Sakit', s.sakit, 'yellow'); adaPeringatan = true; }
+                if (s.izin >= BATAS.izin && s.izin > (tr['Izin'] || 0)) { container.innerHTML += buatKartuAlert(nisn, s.nama, s.kelas, 'Izin', s.izin, 'blue'); adaPeringatan = true; }
+                if (s.telat >= BATAS.telat && s.telat > (tr['Terlambat'] || 0)) { container.innerHTML += buatKartuAlert(nisn, s.nama, s.kelas, 'Terlambat', s.telat, 'orange'); adaPeringatan = true; }
             }
 
-            // Urutkan dari jumlah pelanggaran terbanyak
-            Object.keys(dashboardCategoryData).forEach(k => dashboardCategoryData[k].sort((a,b) => b.jumlah - a.jumlah));
-
-            document.getElementById('countAlfaDash').innerText = dashboardCategoryData.Alfa.length;
-            document.getElementById('countSakitDash').innerText = dashboardCategoryData.Sakit.length;
-            document.getElementById('countIzinDash').innerText = dashboardCategoryData.Izin.length;
-
-            let totalPeringatan = dashboardCategoryData.Alfa.length + dashboardCategoryData.Sakit.length + dashboardCategoryData.Izin.length;
-            document.getElementById('dashboardAllSafe').classList.toggle('hidden', totalPeringatan !== 0);
-
-            // Jika modal detail sedang terbuka untuk kategori ini, refresh isinya
-            if (!document.getElementById('modalDetailDashboard').classList.contains('hidden') && kategoriModalAktif) {
-                renderTabelDetailDashboard(kategoriModalAktif);
+            if (!adaPeringatan) {
+                container.innerHTML = `
+                    <div class="col-span-full text-center py-10 bg-white rounded-2xl border border-gray-200 border-dashed">
+                        <i class="fas fa-shield-check text-4xl text-green-400 mb-3"></i>
+                        <h3 class="font-bold text-gray-600">Semua Aman</h3>
+                        <p class="text-sm text-gray-400">Belum ada siswa yang melampaui batas pelanggaran sesuai filter ini.</p>
+                    </div>`;
             }
         }
 
-        let kategoriModalAktif = null;
-
-        function labelKategoriDashboard(kategori) {
-            if (kategori === 'Alfa') return { label: 'Alfa', warna: 'red', batas: '3 kali' };
-            if (kategori === 'Sakit') return { label: 'Sakit', warna: 'yellow', batas: '7 kali' };
-            return { label: 'Izin', warna: 'blue', batas: '5 kali' };
-        }
-
-        function showDetailDashboard(kategori) {
-            kategoriModalAktif = kategori;
-            let info = labelKategoriDashboard(kategori);
-            document.getElementById('titleModalDashboard').innerHTML = `<i class="fas fa-exclamation-circle text-${info.warna}-500"></i> Daftar Siswa - ${info.label}`;
-            document.getElementById('subtitleModalDashboard').innerText = `Siswa dengan catatan ${info.label.toLowerCase()} \u2265 ${info.batas} yang belum ditindaklanjuti.`;
-
-            renderTabelDetailDashboard(kategori);
-
-            document.getElementById('modalDetailDashboard').classList.remove('hidden');
-            setTimeout(() => document.getElementById('modalBoxDashboard').classList.remove('scale-95'), 10);
-        }
-
-        function renderTabelDetailDashboard(kategori) {
-            let list = dashboardCategoryData[kategori] || [];
-            let html = list.map(x => `<tr class="border-b hover:bg-gray-50">
-                <td class="px-4 py-3">${x.nisn||'-'}</td>
-                <td class="px-4 py-3 font-medium">${x.nama||'-'}</td>
-                <td class="px-4 py-3">${x.kelas||'-'}</td>
-                <td class="px-4 py-3 text-center">
-                    <button onclick="showTanggalDashboard('${x.kategori}', '${x.nisn}', '${x.nama.replace(/'/g,"\\'")}')" class="font-bold text-gray-700 underline decoration-dotted hover:text-indigo-600 smooth-transition" title="Klik untuk lihat tanggal">${x.jumlah}</button>
-                </td>
-                <td class="px-4 py-3 text-center">
-                    <button onclick="lakukanTindakan('${x.nisn}', '${x.nama.replace(/'/g,"\\'")}', '${x.kategori}', ${x.jumlah})" class="px-3 py-1.5 bg-indigo-600 text-white hover:bg-indigo-700 rounded-lg text-xs font-bold smooth-transition whitespace-nowrap">
-                        <i class="fas fa-handshake"></i> Tindakan
-                    </button>
-                </td>
-            </tr>`).join("");
-            document.getElementById('tabelDetailDashboard').innerHTML = html || `<tr><td colspan="5" class="px-4 py-6 text-center text-gray-500">Tidak ada siswa pada kategori ini.</td></tr>`;
-        }
-
-        // ======================= MODAL DETAIL TANGGAL (GENERIK) =======================
-        // Dipakai oleh Dashboard (Alfa/Sakit/Izin) dan menu Keterlambatan.
-        // Daftar tanggal yang ditampilkan sudah dijamin unik (di-dedup saat data dikumpulkan).
-        function formatTanggalIndo(ymd) {
-            if(!ymd) return '-';
-            let d = new Date(ymd + 'T00:00:00');
-            if(isNaN(d.getTime())) return ymd;
-            const hari = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
-            const bulan = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
-            return `${hari[d.getDay()]}, ${d.getDate()} ${bulan[d.getMonth()]} ${d.getFullYear()}`;
-        }
-
-        function tampilkanTanggalSiswa(judul, subjudul, tanggalArr) {
-            // Dedup + urutkan sebagai jaring pengaman tambahan meskipun sumber data seharusnya sudah unik.
-            let unik = Array.from(new Set((tanggalArr || []).filter(Boolean))).sort();
-            document.getElementById('titleModalTanggalSiswa').innerHTML = `<i class="fas fa-calendar-day text-indigo-500"></i> ${judul}`;
-            document.getElementById('subtitleModalTanggalSiswa').innerText = subjudul;
-            let html = unik.map((t, i) => `<tr class="border-b hover:bg-gray-50"><td class="px-4 py-2 text-center text-gray-500">${i+1}</td><td class="px-4 py-2 font-medium">${formatTanggalIndo(t)}</td></tr>`).join("");
-            document.getElementById('tabelTanggalSiswa').innerHTML = html || `<tr><td colspan="2" class="px-4 py-6 text-center text-gray-500">Tidak ada data tanggal.</td></tr>`;
-            document.getElementById('modalTanggalSiswa').classList.remove('hidden');
-            setTimeout(() => document.getElementById('modalBoxTanggalSiswa').classList.remove('scale-95'), 10);
-        }
-
-        function tutupModalTanggalSiswa() {
-            document.getElementById('modalBoxTanggalSiswa').classList.add('scale-95');
-            setTimeout(() => document.getElementById('modalTanggalSiswa').classList.add('hidden'), 300);
-        }
-
-        function showTanggalDashboard(kategori, nisn, nama) {
-            let dates = dashboardTanggalMap[kategori + '_' + nisn] || [];
-            let info = labelKategoriDashboard(kategori);
-            tampilkanTanggalSiswa(`Tanggal ${info.label} - ${nama}`, `Daftar tanggal ${info.label.toLowerCase()} untuk ${nama} (tanpa duplikat).`, dates);
-        }
-
-        function showTanggalTelat(key, nama) {
-            let dates = telatTanggalMap[key] || [];
-            tampilkanTanggalSiswa(`Tanggal Keterlambatan - ${nama}`, `Daftar tanggal keterlambatan ${nama} (tanpa duplikat).`, dates);
-        }
-
-        function tutupModalDashboard() {
-            document.getElementById('modalBoxDashboard').classList.add('scale-95');
-            setTimeout(() => {
-                document.getElementById('modalDetailDashboard').classList.add('hidden');
-                kategoriModalAktif = null;
-            }, 300);
+        function buatKartuAlert(nisn, nama, kelas, kategori, jumlah, color) {
+            let bg = `bg-${color}-50`;
+            let border = `border-${color}-200`;
+            let iconColor = `text-${color}-500`;
+            let textColor = `text-${color}-700`;
+            let icon = kategori === 'Terlambat' ? 'fa-clock' : 'fa-exclamation-circle';
+            return `
+                <div class="${bg} border ${border} rounded-2xl p-5 shadow-sm transform transition hover:scale-105 duration-200 flex flex-col justify-between h-full">
+                    <div>
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm">
+                                <i class="fas ${icon} ${iconColor} text-lg"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs font-bold uppercase ${textColor} mb-0.5">${kategori}</p>
+                                <h4 class="font-bold text-gray-800 leading-tight">${nama}</h4>
+                                <p class="text-xs text-gray-500 font-medium mt-0.5"><i class="fas fa-layer-group text-gray-400"></i> Kelas: ${kelas}</p>
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-600 mb-4 bg-white/60 p-2 rounded-lg">Telah mencapai <b>${jumlah} kali</b> catatan ${kategori.toLowerCase()}.</p>
+                    </div>
+                    <div>
+                        <button onclick="lakukanTindakan('${nisn}', '${nama}', '${kategori}', ${jumlah})" class="w-full py-2.5 bg-white ${textColor} border ${border} hover:bg-gray-50 rounded-xl text-sm font-bold smooth-transition shadow-sm flex items-center justify-center gap-2">
+                            <i class="fas fa-handshake"></i> Lakukan Tindakan
+                        </button>
+                    </div>
+                </div>
+            `;
         }
 
         let dataTindakanAktif = null;
@@ -1139,8 +931,6 @@
             if (!dataTindakanAktif) return;
             const { nisn, nama, kategori, jumlah } = dataTindakanAktif;
             tutupModalKonfirmasi();
-            tutupModalDashboard();
-            tutupModalTelatAksi();
             setLoading(true, "Menyiapkan form kasus...");
             runBackend('simpanTindakan', [{nisn: nisn, kategori: kategori, jumlah: jumlah}], function(res) {
                 setLoading(false);
@@ -1294,11 +1084,9 @@
                 setLoading(false);
                 if(res) {
                     let html = [...res].reverse().map(r => {
-                        // Kolom sheet DataKasus: 0 Timestamp, 1 NISN, 2 Nama, 3 Kelas, 4 Tanggal Kejadian,
-                        // 5 Guru BK, 6 Jenis Pelanggaran, 7 Permasalahan, 8 Tindak Lanjut, 9 Penyelesai, 10 Keterangan, 11 Link PDF
-                        let tanggalKejadian = r[4] || '-';
+                        let parsedDate = r[0] ? new Date(r[0]).toLocaleDateString('id-ID') : '-';
                         let doc = r[11] && r[11].startsWith("http") ? `<a href="${r[11]}" target="_blank" class="text-red-500 hover:text-red-700 text-xl"><i class="fas fa-file-pdf"></i></a>` : '-';
-                        return `<tr class="border-b hover:bg-gray-50"><td class="px-4 py-3 text-xs text-gray-500">${tanggalKejadian}</td><td class="px-4 py-3"><div class="font-semibold">${r[2]||'-'}</div><div class="text-xs text-gray-500">${r[3]||'-'} | NISN: ${r[1]||'-'}</div></td><td class="px-4 py-3 text-sm">${r[5]||'-'}</td><td class="px-4 py-3"><span class="px-2 py-1 bg-red-100 text-red-800 rounded text-xs font-bold whitespace-nowrap">${r[6]||'-'}</span></td><td class="px-4 py-3 text-xs max-w-xs truncate" title="${r[7]||'-'}">${r[7]||'-'}</td><td class="px-4 py-3 text-xs max-w-xs truncate" title="${r[8]||'-'}">${r[8]||'-'}</td><td class="px-4 py-3 text-xs">${r[9]||'-'}</td><td class="px-4 py-3 text-center">${doc}</td></tr>`;
+                        return `<tr class="border-b hover:bg-gray-50"><td class="px-4 py-3 text-xs text-gray-500">${parsedDate}</td><td class="px-4 py-3"><div class="font-semibold">${r[2]||'-'}</div><div class="text-xs text-gray-500">${r[3]||'-'} | NISN: ${r[1]||'-'}</div></td><td class="px-4 py-3 text-sm">${r[5]||'-'}</td><td class="px-4 py-3"><span class="px-2 py-1 bg-red-100 text-red-800 rounded text-xs font-bold whitespace-nowrap">${r[6]||'-'}</span></td><td class="px-4 py-3 text-xs max-w-xs truncate" title="${r[7]||'-'}">${r[7]||'-'}</td><td class="px-4 py-3 text-xs max-w-xs truncate" title="${r[8]||'-'}">${r[8]||'-'}</td><td class="px-4 py-3 text-xs">${r[9]||'-'}</td><td class="px-4 py-3 text-center">${doc}</td></tr>`;
                     }).join("");
                     document.getElementById('tabelRiwayat').innerHTML = html || "<tr><td colspan='8' class='p-6 text-center text-gray-400'>Belum ada riwayat.</td></tr>";
                 }
@@ -1311,51 +1099,99 @@
             runBackend('getRekapAbsensi', [], function(res) {
                 setLoading(false);
                 rawDataAbsensi = res && res.details ? res.details : [];
-                let kSet = new Set(); rawDataAbsensi.forEach(r => { if(r[3]) kSet.add(r[3]); });
-                let sel = document.getElementById('filterKelasAbsensi'); let cVal = sel.value;
-                sel.innerHTML = '<option value="Semua">Semua Kelas</option>';
-                Array.from(kSet).sort().forEach(k => { let opt=document.createElement('option'); opt.value=k; opt.text=k; sel.add(opt); });
-                if(Array.from(kSet).includes(cVal)) sel.value = cVal;
+                
+                let kSet = new Set(); 
+                let bSet = new Set();
+                
+                rawDataAbsensi.forEach(r => { 
+                    if(r[3]) kSet.add(r[3]); 
+                    if(r[0]) {
+                        let d = new Date(r[0]);
+                        if(!isNaN(d.getTime())) bSet.add(d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2, '0'));
+                    }
+                });
+
+                // Dropdown Filter Kelas
+                let selK = document.getElementById('filterKelasAbsensi'); let cValK = selK.value;
+                selK.innerHTML = '<option value="Semua">Semua Kelas</option>';
+                Array.from(kSet).sort().forEach(k => { let opt=document.createElement('option'); opt.value=k; opt.text=k; selK.add(opt); });
+                if(Array.from(kSet).includes(cValK)) selK.value = cValK;
+
+                // Dropdown Filter Bulan (Untuk Kalender Absensi)
+                let selB = document.getElementById('filterBulanAbsensi'); let cValB = selB.value;
+                selB.innerHTML = '<option value="Semua">Semua Bulan</option>';
+                let monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+                let sortedMonths = Array.from(bSet).sort().reverse();
+                let now = new Date();
+                let currentYM = now.getFullYear() + "-" + String(now.getMonth()+1).padStart(2, '0');
+                let hasCurrent = false;
+
+                sortedMonths.forEach(ym => {
+                    let parts = ym.split("-");
+                    let text = monthNames[parseInt(parts[1])-1] + " " + parts[0];
+                    let opt = document.createElement('option');
+                    opt.value = ym; opt.text = text; selB.add(opt);
+                    if(ym === currentYM) hasCurrent = true;
+                });
+
+                if(cValB && sortedMonths.includes(cValB)) selB.value = cValB;
+                else if (hasCurrent) selB.value = currentYM;
+                else if (sortedMonths.length > 0) selB.value = sortedMonths[0];
+                else selB.value = "Semua";
+
                 applyFilterAbsensi();
             });
         }
 
         function applyFilterAbsensi() {
-            let f = document.getElementById('filterKelasAbsensi').value;
-            let count = {h:0, s:0, i:0, a:0, d:0}; let sRekap = {}; let tbodyD = "";
+            let fKelas = document.getElementById('filterKelasAbsensi').value;
+            let fBulan = document.getElementById('filterBulanAbsensi').value;
+            
+            let count = {h:0, s:0, i:0, a:0, d:0}; 
+            let sRekap = {}; 
+            let tbodyD = "";
             let rev = [...rawDataAbsensi].reverse();
+            let filteredForCal = [];
             
             rev.forEach(r => {
-                if (!isHariSekolahValid(r[0])) return; // lewati Sabtu, Minggu, dan tanggal merah
-                if(f === "Semua" || r[3] === f) {
+                let matchKelas = (fKelas === "Semua" || r[3] === fKelas);
+                let matchBulan = true;
+                if(fBulan !== "Semua") {
+                    let d = new Date(r[0]);
+                    if(isNaN(d.getTime())) matchBulan = false;
+                    else matchBulan = (d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2, '0')) === fBulan;
+                }
+
+                if(matchKelas && matchBulan) {
+                    filteredForCal.push(r); 
+
                     let statusText = (r[4] || "").toString().toLowerCase().trim();
                     let ketText = (r[5] || "").toString().toLowerCase().trim();
                     let st = statusText ? statusText : ketText; 
                     
-                    if(st === 'h' || st.includes('hadir')) count.h++; 
-                    else if(st === 's' || st.includes('sakit')) count.s++; 
-                    else if(st === 'i' || st.includes('izin')||st.includes('ijin')) count.i++; 
-                    else if(st === 'a' || st.includes('alfa')||st.includes('alpha')) count.a++; 
-                    else if(st.includes('dispen')) count.d++;
+                    let isH = st === 'h' || st.includes('hadir');
+                    let isS = st === 's' || st.includes('sakit');
+                    let isI = st === 'i' || st.includes('izin') || st.includes('ijin');
+                    let isA = st === 'a' || st.includes('alfa') || st.includes('alpha');
+                    let isT = st === 't' || st.includes('telat') || st.includes('terlambat');
+                    let isD = st.includes('dispen');
+
+                    if(isH) count.h++; else if(isS) count.s++; else if(isI) count.i++; else if(isA) count.a++; else if(isD) count.d++;
                     
                     if (r[1] && r[2]) {
                         let k = r[1]+"|"+r[2]+"|"+r[3];
                         if(!sRekap[k]) sRekap[k] = {h:0,s:0,i:0,a:0,d:0};
-                        
-                        if(st === 'h' || st.includes('hadir')) sRekap[k].h++; 
-                        else if(st === 's' || st.includes('sakit')) sRekap[k].s++; 
-                        else if(st === 'i' || st.includes('izin')||st.includes('ijin')) sRekap[k].i++; 
-                        else if(st === 'a' || st.includes('alfa')||st.includes('alpha')) sRekap[k].a++; 
-                        else if(st.includes('dispen')) sRekap[k].d++;
+                        if(isH) sRekap[k].h++; else if(isS) sRekap[k].s++; else if(isI) sRekap[k].i++; else if(isA) sRekap[k].a++; else if(isD) sRekap[k].d++;
                     }
                     
                     let bg = "bg-gray-100 text-gray-800";
                     let label = st ? st.toUpperCase() : '-';
-                    if(st === 'h' || st.includes('hadir')){ bg="bg-green-100 text-green-800"; label="HADIR"; } 
-                    else if(st === 's' || st.includes('sakit')){ bg="bg-yellow-100 text-yellow-800"; label="SAKIT"; } 
-                    else if(st === 'i' || st.includes('izin')||st.includes('ijin')){ bg="bg-blue-100 text-blue-800"; label="IZIN"; } 
-                    else if(st === 'a' || st.includes('alfa')||st.includes('alpha')){ bg="bg-red-100 text-red-800"; label="ALFA"; } 
-                    else if(st.includes('dispen')){ bg="bg-purple-100 text-purple-800"; label="DISPEN"; }
+                    if(isH){ bg="bg-green-100 text-green-800"; label="HADIR"; } 
+                    else if(isS){ bg="bg-yellow-100 text-yellow-800"; label="SAKIT"; } 
+                    else if(isI){ bg="bg-blue-100 text-blue-800"; label="IZIN"; } 
+                    else if(isA){ bg="bg-red-100 text-red-800"; label="ALFA"; } 
+                    else if(isT){ bg="bg-orange-100 text-orange-800"; label="TERLAMBAT"; }
+                    else if(isD){ bg="bg-purple-100 text-purple-800"; label="DISPEN"; }
                     
                     let parsedDate = r[0] ? new Date(r[0]).toLocaleString('id-ID',{dateStyle:'short'}) : '-';
 
@@ -1363,173 +1199,128 @@
                 }
             });
             document.getElementById('rekapHadir').innerText = count.h; document.getElementById('rekapSakit').innerText = count.s; document.getElementById('rekapIzin').innerText = count.i; document.getElementById('rekapAlfa').innerText = count.a; document.getElementById('rekapDispen').innerText = count.d;
-            document.getElementById('tabelAbsensi').innerHTML = tbodyD || "<tr><td colspan='6' class='p-4 text-center text-gray-400'>Tidak ada data.</td></tr>";
+            document.getElementById('tabelAbsensi').innerHTML = tbodyD || "<tr><td colspan='6' class='p-4 text-center text-gray-400'>Tidak ada riwayat.</td></tr>";
 
             let arr = Object.keys(sRekap).map(k => ({n:k.split("|")[0], nm:k.split("|")[1], kl:k.split("|")[2], d:sRekap[k]})).sort((a,b)=>b.d.a-a.d.a);
             let tbodyR = arr.map(x => `<tr class="border-b hover:bg-gray-50"><td class="px-4 py-3">${x.n}</td><td class="px-4 py-3 font-medium">${x.nm}</td><td class="px-4 py-3">${x.kl}</td><td class="px-3 py-3 text-center text-green-600">${x.d.h||'-'}</td><td class="px-3 py-3 text-center text-yellow-600">${x.d.s||'-'}</td><td class="px-3 py-3 text-center text-blue-600">${x.d.i||'-'}</td><td class="px-3 py-3 text-center text-red-600 font-bold">${x.d.a||'-'}</td><td class="px-3 py-3 text-center text-purple-600">${x.d.d||'-'}</td></tr>`).join("");
             document.getElementById('tabelRekapSiswaAbsensi').innerHTML = tbodyR || "<tr><td colspan='8' class='p-4 text-center text-gray-400'>Belum ada rekap.</td></tr>";
+
+            // LOGIKA PEMBUATAN KALENDER ABSENSI BULANAN
+            let calContainer = document.getElementById('containerKalenderAbsensi');
+            if (fBulan === "Semua") {
+                calContainer.innerHTML = "<p class='text-center text-gray-500 py-6'><i class='fas fa-calendar-alt text-3xl mb-3 text-gray-300 block'></i>Silakan pilih bulan tertentu pada filter di atas untuk melihat kalender absensi.</p>";
+            } else {
+                let parts = fBulan.split("-");
+                let year = parseInt(parts[0]);
+                let month = parseInt(parts[1]);
+                let daysInMonth = new Date(year, month, 0).getDate();
+                
+                let theadHTML = `<tr><th class="px-4 py-3 text-left font-bold text-indigo-900 sticky left-0 bg-indigo-100 z-20 shadow-[1px_0_0_0_#e5e7eb]">Nama Siswa</th>`;
+                for(let i=1; i<=daysInMonth; i++) {
+                    theadHTML += `<th class="px-2 py-3 text-center font-bold text-indigo-900 min-w-[30px] border-l border-indigo-200">${i}</th>`;
+                }
+                theadHTML += `</tr>`;
+
+                let calData = {};
+                filteredForCal.forEach(r => {
+                    let d = new Date(r[0]);
+                    let tgl = d.getDate();
+                    let nisn = r[1];
+                    let nama = r[2];
+                    let k = nisn + "|" + nama;
+
+                    let statusText = (r[4] || "").toString().toLowerCase().trim();
+                    let ketText = (r[5] || "").toString().toLowerCase().trim();
+                    let st = statusText ? statusText : ketText;
+                    
+                    let code = '';
+                    if(st === 'h' || st.includes('hadir')) code = 'H';
+                    else if(st === 's' || st.includes('sakit')) code = 'S';
+                    else if(st === 'i' || st.includes('izin')||st.includes('ijin')) code = 'I';
+                    else if(st === 'a' || st.includes('alfa')||st.includes('alpha')) code = 'A';
+                    else if(st === 't' || st.includes('telat')||st.includes('terlambat')) code = 'T';
+                    else if(st.includes('dispen')) code = 'D';
+
+                    if(code) {
+                        if(!calData[k]) calData[k] = {};
+                        calData[k][tgl] = code; 
+                    }
+                });
+
+                let tbodyHTML = "";
+                let sortedKeys = Object.keys(calData).sort((a,b) => a.split("|")[1].localeCompare(b.split("|")[1])); 
+                
+                sortedKeys.forEach(k => {
+                    let nama = k.split("|")[1];
+                    tbodyHTML += `<tr class="border-b transition-colors"><td class="px-4 py-2 font-medium text-gray-800 sticky left-0 bg-white hover:bg-gray-50 z-10 whitespace-nowrap shadow-[1px_0_0_0_#e5e7eb] border-r border-gray-100">${nama}</td>`;
+                    for(let i=1; i<=daysInMonth; i++) {
+                        let c = calData[k][i] || '';
+                        let colorClass = "";
+                        if(c==='H') colorClass = "text-green-700 font-bold bg-green-50";
+                        else if(c==='S') colorClass = "text-yellow-700 font-bold bg-yellow-50";
+                        else if(c==='I') colorClass = "text-blue-700 font-bold bg-blue-50";
+                        else if(c==='A') colorClass = "text-red-700 font-bold bg-red-50";
+                        else if(c==='T') colorClass = "text-orange-700 font-bold bg-orange-50";
+                        else if(c==='D') colorClass = "text-purple-700 font-bold bg-purple-50";
+
+                        tbodyHTML += `<td class="px-1 py-2 text-center text-xs border-r border-gray-100 ${colorClass}">${c}</td>`;
+                    }
+                    tbodyHTML += `</tr>`;
+                });
+
+                if(sortedKeys.length === 0) tbodyHTML = `<tr><td colspan="${daysInMonth+1}" class="p-6 text-center text-gray-500">Tidak ada data kehadiran di bulan ini.</td></tr>`;
+
+                calContainer.innerHTML = `<div class="overflow-x-auto rounded-xl border border-gray-200 hide-scrollbar relative">
+                    <table class="min-w-full divide-y divide-gray-200 text-sm">
+                        <thead class="bg-indigo-50">${theadHTML}</thead>
+                        <tbody class="bg-white divide-y divide-gray-100">${tbodyHTML}</tbody>
+                    </table>
+                </div>
+                <div class="mt-4 flex flex-wrap gap-3 text-xs justify-center bg-gray-50 p-2 rounded-lg border border-gray-100">
+                    <span class="px-2 py-1 bg-green-100 text-green-800 rounded font-bold">H : Hadir</span>
+                    <span class="px-2 py-1 bg-yellow-100 text-yellow-800 rounded font-bold">S : Sakit</span>
+                    <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded font-bold">I : Izin</span>
+                    <span class="px-2 py-1 bg-red-100 text-red-800 rounded font-bold">A : Alfa</span>
+                    <span class="px-2 py-1 bg-orange-100 text-orange-800 rounded font-bold">T : Terlambat</span>
+                    <span class="px-2 py-1 bg-purple-100 text-purple-800 rounded font-bold">D : Dispen</span>
+                </div>`;
+            }
         }
 
         let rawDataTelat = [];
-        let rawTindakTelat = [];
-        let telatAksiData = [];
-        let telatTanggalMap = {};
-        const BATAS_TELAT = 3;
-
-        // Ambil bagian tanggal saja (yyyy-mm-dd) dari string timestamp/ISO, dipakai untuk deduplikasi.
-        function tanggalKeyOnly(raw) {
-            if(!raw) return "";
-            let s = raw.toString();
-            if (s.includes("T")) return s.split("T")[0];
-            let d = new Date(s);
-            if(!isNaN(d.getTime())) return d.toISOString().split("T")[0];
-            return s.split(" ")[0];
-        }
-
-        // Kunci unik per kejadian keterlambatan: tanggal + (NISN atau nama jika NISN kosong).
-        // Ini mencegah baris duplikat (nama & tanggal sama) dihitung lebih dari sekali.
-        function kunciUnikTelat(r) {
-            let tgl = tanggalKeyOnly(r[0]);
-            let id = (r[1] || "").toString().trim().toLowerCase();
-            if (!id) id = (r[2] || "").toString().trim().toLowerCase();
-            return tgl + "_" + id;
-        }
-
-        function dataTelatUnik(rawArr) {
-            let seen = new Set();
-            let result = [];
-            rawArr.forEach(r => {
-                if (!isHariSekolahValid(r[0])) return; // lewati Sabtu, Minggu, dan tanggal merah
-                let key = kunciUnikTelat(r);
-                if (key === "_" || !key) return;
-                if (!seen.has(key)) {
-                    seen.add(key);
-                    result.push(r);
-                }
-            });
-            return result;
-        }
-
         function loadDataTelat() {
             setLoading(true);
             runBackend('getRekapKeterlambatan', [], function(res) {
+                setLoading(false);
                 rawDataTelat = res || [];
-                runBackend('getDataTindakan', [], function(resTindak) {
-                    setLoading(false);
-                    rawTindakTelat = resTindak || [];
-
-                    let kSet = new Set(); rawDataTelat.forEach(r => { if(r[3]) kSet.add(r[3]); });
-                    let sel = document.getElementById('filterKelasTelat'); let cVal = sel.value;
-                    sel.innerHTML = '<option value="Semua">Semua Kelas</option>';
-                    Array.from(kSet).sort().forEach(k => { let opt=document.createElement('option'); opt.value=k; opt.text=k; sel.add(opt); });
-                    if(Array.from(kSet).includes(cVal)) sel.value = cVal;
-                    applyFilterTelat();
-                });
+                let kSet = new Set(); rawDataTelat.forEach(r => { if(r[3]) kSet.add(r[3]); });
+                let sel = document.getElementById('filterKelasTelat'); let cVal = sel.value;
+                sel.innerHTML = '<option value="Semua">Semua Kelas</option>';
+                Array.from(kSet).sort().forEach(k => { let opt=document.createElement('option'); opt.value=k; opt.text=k; sel.add(opt); });
+                if(Array.from(kSet).includes(cVal)) sel.value = cVal;
+                applyFilterTelat();
             });
         }
 
         function applyFilterTelat() {
             let f = document.getElementById('filterKelasTelat').value;
-
-            // Bangun telatTanggalMap & telatAksiData lebih dulu (dari data keseluruhan, anti duplikat).
-            hitungTelatAksi();
-
-            // Hitungan (total & peringkat) memakai data yang sudah di-dedup per (NISN/nama + tanggal).
-            let uniqueAll = dataTelatUnik(rawDataTelat);
-            let uniqueFiltered = uniqueAll.filter(r => f === "Semua" || r[3] === f);
-
-            let sRekap = {};
-            uniqueFiltered.forEach(r => {
-                let nisn = (r[1] || "").toString().trim();
-                let nama = (r[2] || "").toString().trim();
-                let kelas = (r[3] || "").toString().trim();
-                if (!nisn && !nama) return;
-                let dispKey = nisn+"|"+nama+"|"+kelas;
-                let lookupKey = nisn || nama;
-                if(!sRekap[dispKey]) sRekap[dispKey] = { n: nisn, nm: nama, kl: kelas, j: 0, lookupKey };
-                sRekap[dispKey].j++;
-            });
-            document.getElementById('totalTelat').innerText = uniqueFiltered.length;
-
-            // Log riwayat harian tetap menampilkan baris mentah (untuk transparansi audit),
-            // tapi tetap melewati Sabtu/Minggu/tanggal merah karena bukan hari sekolah yang valid.
+            let total = 0; let sRekap = {}; let tbodyD = "";
             let rev = [...rawDataTelat].reverse();
-            let tbodyD = rev.filter(r => isHariSekolahValid(r[0]) && (f === "Semua" || r[3] === f)).map(r => {
-                let parsedDate = r[0] ? new Date(r[0]).toLocaleString('id-ID',{dateStyle:'short'}) : '-';
-                return `<tr class="border-b hover:bg-orange-50"><td class="px-4 py-3 text-xs text-gray-500">${parsedDate}</td><td class="px-4 py-3">${r[1]||'-'}</td><td class="px-4 py-3 font-medium">${r[2]||'-'}</td><td class="px-4 py-3">${r[3]||'-'}</td><td class="px-4 py-3 text-orange-600 font-bold">${r[4]||'-'}</td><td class="px-4 py-3">${r[5]||'-'}</td></tr>`;
-            }).join("");
+
+            rev.forEach(r => {
+                if(f === "Semua" || r[3] === f) {
+                    total++;
+                    if(r[1] && r[2]) { let k = r[1]+"|"+r[2]+"|"+r[3]; sRekap[k] = (sRekap[k]||0)+1; }
+                    let parsedDate = r[0] ? new Date(r[0]).toLocaleString('id-ID',{dateStyle:'short'}) : '-';
+                    tbodyD += `<tr class="border-b hover:bg-orange-50"><td class="px-4 py-3 text-xs text-gray-500">${parsedDate}</td><td class="px-4 py-3">${r[1]||'-'}</td><td class="px-4 py-3 font-medium">${r[2]||'-'}</td><td class="px-4 py-3">${r[3]||'-'}</td><td class="px-4 py-3 text-orange-600 font-bold">${r[4]||'-'}</td><td class="px-4 py-3">${r[5]||'-'}</td></tr>`;
+                }
+            });
+            document.getElementById('totalTelat').innerText = total;
             document.getElementById('tabelTelat').innerHTML = tbodyD || "<tr><td colspan='6' class='p-4 text-center text-gray-400'>Tidak ada data.</td></tr>";
 
-            let arr = Object.values(sRekap).sort((a,b)=>b.j-a.j);
-            let tbodyR = arr.map((x,i) => `<tr class="border-b hover:bg-orange-50"><td class="px-4 py-3 text-center text-gray-500 font-bold">${i<3 ? ['🥇','🥈','🥉'][i] : i+1}</td><td class="px-4 py-3">${x.n||'-'}</td><td class="px-4 py-3 font-medium">${x.nm||'-'}</td><td class="px-4 py-3">${x.kl||'-'}</td><td class="px-4 py-3 text-center"><button onclick="showTanggalTelat('${x.lookupKey.replace(/'/g,"\\'")}', '${(x.nm||'-').replace(/'/g,"\\'")}')" class="font-bold text-orange-600 underline decoration-dotted hover:text-orange-800 smooth-transition" title="Klik untuk lihat tanggal">${x.j}</button></td></tr>`).join("");
+            let arr = Object.keys(sRekap).map(k => ({n:k.split("|")[0], nm:k.split("|")[1], kl:k.split("|")[2], j:sRekap[k]})).sort((a,b)=>b.j-a.j);
+            let tbodyR = arr.map((x,i) => `<tr class="border-b hover:bg-orange-50"><td class="px-4 py-3 text-center text-gray-500 font-bold">${i<3 ? ['🥇','🥈','🥉'][i] : i+1}</td><td class="px-4 py-3">${x.n}</td><td class="px-4 py-3 font-medium">${x.nm}</td><td class="px-4 py-3">${x.kl}</td><td class="px-4 py-3 text-center text-orange-600 font-bold">${x.j}</td></tr>`).join("");
             document.getElementById('tabelRekapSiswaTelat').innerHTML = tbodyR || "<tr><td colspan='5' class='p-4 text-center text-gray-400'>Belum ada rekap.</td></tr>";
-        }
-
-        // Peringatan "Perlu Tindakan": total keseluruhan (semua kelas, tidak terpengaruh filter kelas),
-        // dihitung dari data unik per (NISN + tanggal) agar tidak double-count.
-        // Fungsi ini juga membangun telatTanggalMap (daftar tanggal unik per siswa) untuk drill-down.
-        function hitungTelatAksi() {
-            let uniqueAll = dataTelatUnik(rawDataTelat);
-            let rekap = {};
-            telatTanggalMap = {};
-            uniqueAll.forEach(r => {
-                let nisn = (r[1] || "").toString().trim();
-                let nama = (r[2] || "").toString().trim();
-                let kelas = (r[3] || "").toString().trim();
-                if (!nisn && !nama) return;
-                let key = nisn || nama;
-                if (!rekap[key]) rekap[key] = { nisn, nama, kelas, jumlah: 0 };
-                rekap[key].jumlah++;
-                if (!telatTanggalMap[key]) telatTanggalMap[key] = [];
-                telatTanggalMap[key].push(tanggalKeyOnly(r[0]));
-            });
-
-            let tracker = {};
-            rawTindakTelat.forEach(t => {
-                let nisn = t[1], kategori = t[2], jumlahDiakui = parseInt(t[3]);
-                if (kategori !== 'Terlambat') return;
-                if (!tracker[nisn] || jumlahDiakui > tracker[nisn]) tracker[nisn] = jumlahDiakui;
-            });
-
-            telatAksiData = Object.values(rekap)
-                .filter(s => s.jumlah >= BATAS_TELAT && s.jumlah > (tracker[s.nisn] || 0))
-                .sort((a,b) => b.jumlah - a.jumlah);
-
-            document.getElementById('countTelatAksi').innerText = telatAksiData.length;
-
-            if (!document.getElementById('modalDetailTelatAksi').classList.contains('hidden')) {
-                renderTabelDetailTelatAksi();
-            }
-        }
-
-        function showDetailTelatAksi() {
-            renderTabelDetailTelatAksi();
-            document.getElementById('modalDetailTelatAksi').classList.remove('hidden');
-            setTimeout(() => document.getElementById('modalBoxTelatAksi').classList.remove('scale-95'), 10);
-        }
-
-        function renderTabelDetailTelatAksi() {
-            let html = telatAksiData.map(x => `<tr class="border-b hover:bg-gray-50">
-                <td class="px-4 py-3">${x.nisn||'-'}</td>
-                <td class="px-4 py-3 font-medium">${x.nama||'-'}</td>
-                <td class="px-4 py-3">${x.kelas||'-'}</td>
-                <td class="px-4 py-3 text-center">
-                    <button onclick="showTanggalTelat('${(x.nisn||x.nama).replace(/'/g,"\\'")}', '${x.nama.replace(/'/g,"\\'")}')" class="font-bold text-gray-700 underline decoration-dotted hover:text-indigo-600 smooth-transition" title="Klik untuk lihat tanggal">${x.jumlah}</button>
-                </td>
-                <td class="px-4 py-3 text-center">
-                    <button onclick="lakukanTindakan('${x.nisn}', '${x.nama.replace(/'/g,"\\'")}', 'Terlambat', ${x.jumlah})" class="px-3 py-1.5 bg-indigo-600 text-white hover:bg-indigo-700 rounded-lg text-xs font-bold smooth-transition whitespace-nowrap">
-                        <i class="fas fa-handshake"></i> Tindakan
-                    </button>
-                </td>
-            </tr>`).join("");
-            document.getElementById('tabelDetailTelatAksi').innerHTML = html || `<tr><td colspan="5" class="px-4 py-6 text-center text-gray-500">Tidak ada siswa yang perlu ditindak.</td></tr>`;
-        }
-
-        function tutupModalTelatAksi() {
-            document.getElementById('modalBoxTelatAksi').classList.add('scale-95');
-            setTimeout(() => {
-                document.getElementById('modalDetailTelatAksi').classList.add('hidden');
-            }, 300);
         }
 
         let rawDataKmob = [];
