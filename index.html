@@ -1353,7 +1353,7 @@
                 let built = bangunTabelKalender(filteredForCal, year, month);
 
                 if(built.jumlahSiswa === 0) {
-                    built.tbodyHTML = `<tr><td colspan="${built.daysInMonth+1}" class="p-6 text-center text-gray-500">Tidak ada data kehadiran di bulan ini.</td></tr>`;
+                    built.tbodyHTML = `<tr><td colspan="${built.daysInMonth+2}" class="p-6 text-center text-gray-500">Tidak ada data kehadiran di bulan ini.</td></tr>`;
                 }
 
                 calContainer.innerHTML = `<div class="overflow-x-auto rounded-xl border border-gray-200 hide-scrollbar relative">
@@ -1381,7 +1381,9 @@
         function bangunTabelKalender(dataRows, year, month) {
             let daysInMonth = new Date(year, month, 0).getDate();
 
-            let theadHTML = `<tr><th class="px-4 py-3 text-left font-bold text-indigo-900 sticky left-0 bg-indigo-100 z-20 shadow-[1px_0_0_0_#e5e7eb]">Nama Siswa</th>`;
+            let theadHTML = `<tr>
+                <th class="px-3 py-3 text-left font-bold text-indigo-900 sticky left-0 bg-indigo-100 z-20 shadow-[1px_0_0_0_#e5e7eb] w-[110px] min-w-[110px]">NISN</th>
+                <th class="px-4 py-3 text-left font-bold text-indigo-900 sticky left-[110px] bg-indigo-100 z-20 shadow-[1px_0_0_0_#e5e7eb]">Nama Siswa</th>`;
             for(let i=1; i<=daysInMonth; i++) {
                 let tm = cekTanggalMerah(year, month, i);
                 let headClass = tm.merah ? "bg-red-100 text-red-700" : "text-indigo-900";
@@ -1429,8 +1431,11 @@
             let sortedKeys = Object.keys(calData).sort((a,b) => (namaMap[a]||'').localeCompare(namaMap[b]||''));
 
             sortedKeys.forEach(k => {
-                let nama = namaMap[k] || k;
-                tbodyHTML += `<tr class="border-b transition-colors"><td class="px-4 py-2 font-medium text-gray-800 sticky left-0 bg-white hover:bg-gray-50 z-10 whitespace-nowrap shadow-[1px_0_0_0_#e5e7eb] border-r border-gray-100">${nama}</td>`;
+                let nama = namaMap[k] || '-';
+                let nisnTampil = k || '-';
+                tbodyHTML += `<tr class="border-b transition-colors">
+                    <td class="px-3 py-2 text-xs text-gray-600 sticky left-0 bg-white hover:bg-gray-50 z-10 whitespace-nowrap shadow-[1px_0_0_0_#e5e7eb] border-r border-gray-100 w-[110px] min-w-[110px]">${nisnTampil}</td>
+                    <td class="px-4 py-2 font-medium text-gray-800 sticky left-[110px] bg-white hover:bg-gray-50 z-10 whitespace-nowrap shadow-[1px_0_0_0_#e5e7eb] border-r border-gray-100">${nama}</td>`;
                 for(let i=1; i<=daysInMonth; i++) {
                     let c = calData[k][i] || '';
                     let colorClass = "";
@@ -1492,7 +1497,7 @@
                     <p class="sub">${namaBulan}</p>
                     <table>
                         <thead>${built.theadHTML}</thead>
-                        <tbody>${built.tbodyHTML || '<tr><td colspan="'+(built.daysInMonth+1)+'">Tidak ada data kehadiran.</td></tr>'}</tbody>
+                        <tbody>${built.tbodyHTML || '<tr><td colspan="'+(built.daysInMonth+2)+'">Tidak ada data kehadiran.</td></tr>'}</tbody>
                     </table>
                     <div class="legenda">
                         <span>H: Hadir</span><span>S: Sakit</span><span>I: Izin</span><span>A: Alfa</span><span>T: Terlambat</span><span>D: Dispen</span><span class="merah">Kolom merah: Sabtu/Minggu/Tanggal Merah</span>
@@ -1510,7 +1515,7 @@
                 .sub{margin:0 0 10px 0; font-size:12px; color:#555;}
                 table{border-collapse: collapse; width:100%; font-size:10px;}
                 th, td{border:1px solid #ccc; padding:3px 4px; text-align:center;}
-                th:first-child, td:first-child{text-align:left; white-space:nowrap;}
+                th:first-child, td:first-child, th:nth-child(2), td:nth-child(2){text-align:left; white-space:nowrap;}
                 th.bg-red-100{background:#fee2e2 !important; color:#b91c1c !important;}
                 td.bg-red-50{background:#fef2f2 !important;}
                 td.bg-green-50{background:#f0fdf4 !important; color:#15803d !important; font-weight:bold;}
