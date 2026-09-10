@@ -395,7 +395,12 @@
 
                 <!-- TABEL KALENDER ABSENSI BULANAN -->
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-8">
-                    <h3 class="text-lg font-bold text-gray-800 mb-4 border-b pb-2 flex items-center gap-2"><i class="fas fa-table text-indigo-500"></i> Kalender Absensi Bulanan</h3>
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-4 border-b pb-2">
+                        <h3 class="text-lg font-bold text-gray-800 flex items-center gap-2"><i class="fas fa-table text-indigo-500"></i> Kalender Absensi Bulanan</h3>
+                        <button onclick="cetakKalenderPerKelas()" class="px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-xl flex items-center gap-2 shadow-sm">
+                            <i class="fas fa-print"></i> Cetak per Kelas
+                        </button>
+                    </div>
                     <div id="containerKalenderAbsensi">
                         <p class="text-center text-gray-500 py-4">Memuat kalender...</p>
                     </div>
@@ -1178,6 +1183,49 @@
             });
         }
 
+        // Daftar Hari Libur Nasional & Cuti Bersama Indonesia (sesuai SKB 3 Menteri).
+        // Format key: "YYYY-MM-DD". Silakan tambah/sesuaikan tiap tahun berjalan.
+        const HARI_LIBUR_NASIONAL = {
+            // 2026 - Hari Libur Nasional
+            "2026-01-01": "Tahun Baru Masehi",
+            "2026-01-16": "Isra Mikraj Nabi Muhammad SAW",
+            "2026-02-17": "Tahun Baru Imlek",
+            "2026-03-19": "Hari Suci Nyepi",
+            "2026-03-21": "Hari Raya Idulfitri",
+            "2026-03-22": "Hari Raya Idulfitri",
+            "2026-04-03": "Wafat Yesus Kristus",
+            "2026-04-05": "Kebangkitan Yesus Kristus (Paskah)",
+            "2026-05-01": "Hari Buruh Internasional",
+            "2026-05-14": "Kenaikan Yesus Kristus",
+            "2026-05-27": "Hari Raya Iduladha",
+            "2026-05-31": "Hari Raya Waisak",
+            "2026-06-01": "Hari Lahir Pancasila",
+            "2026-06-16": "Tahun Baru Islam (1 Muharam)",
+            "2026-08-17": "Hari Kemerdekaan RI",
+            "2026-08-25": "Maulid Nabi Muhammad SAW",
+            "2026-12-25": "Hari Raya Natal",
+            // 2026 - Cuti Bersama (boleh disesuaikan kebijakan sekolah masing-masing)
+            "2026-02-16": "Cuti Bersama Imlek",
+            "2026-03-18": "Cuti Bersama Nyepi",
+            "2026-03-20": "Cuti Bersama Idulfitri",
+            "2026-03-23": "Cuti Bersama Idulfitri",
+            "2026-03-24": "Cuti Bersama Idulfitri",
+            "2026-12-24": "Cuti Bersama Natal"
+        };
+
+        // Mengembalikan { merah: boolean, label: string } untuk sebuah tanggal:
+        // merah = true jika hari Sabtu/Minggu ATAU tanggal merah nasional/cuti bersama.
+        function cekTanggalMerah(year, month, tgl) {
+            let d = new Date(year, month - 1, tgl);
+            let hari = d.getDay(); // 0 = Minggu, 6 = Sabtu
+            let key = year + "-" + String(month).padStart(2, '0') + "-" + String(tgl).padStart(2, '0');
+            let libur = HARI_LIBUR_NASIONAL[key];
+            return {
+                merah: hari === 0 || hari === 6 || !!libur,
+                label: libur || (hari === 0 ? "Minggu" : (hari === 6 ? "Sabtu" : ""))
+            };
+        }
+
         let rawDataAbsensi = [];
         function loadDataAbsensi() {
             setLoading(true);
@@ -1298,67 +1346,16 @@
                 let parts = fBulan.split("-");
                 let year = parseInt(parts[0]);
                 let month = parseInt(parts[1]);
-                let daysInMonth = new Date(year, month, 0).getDate();
-                
-                let theadHTML = `<tr><th class="px-4 py-3 text-left font-bold text-indigo-900 sticky left-0 bg-indigo-100 z-20 shadow-[1px_0_0_0_#e5e7eb]">Nama Siswa</th>`;
-                for(let i=1; i<=daysInMonth; i++) {
-                    theadHTML += `<th class="px-2 py-3 text-center font-bold text-indigo-900 min-w-[30px] border-l border-indigo-200">${i}</th>`;
+                let built = bangunTabelKalender(filteredForCal, year, month);
+
+                if(built.jumlahSiswa === 0) {
+                    built.tbodyHTML = `<tr><td colspan="${built.daysInMonth+1}" class="p-6 text-center text-gray-500">Tidak ada data kehadiran di bulan ini.</td></tr>`;
                 }
-                theadHTML += `</tr>`;
-
-                let calData = {};
-                filteredForCal.forEach(r => {
-                    let d = new Date(r[0]);
-                    let tgl = d.getDate();
-                    let nisn = r[1];
-                    let nama = r[2];
-                    let k = nisn + "|" + nama;
-
-                    let statusText = (r[4] || "").toString().toLowerCase().trim();
-                    let ketText = (r[5] || "").toString().toLowerCase().trim();
-                    let st = statusText ? statusText : ketText;
-                    
-                    let code = '';
-                    if(st === 'h' || st.includes('hadir')) code = 'H';
-                    else if(st === 's' || st.includes('sakit')) code = 'S';
-                    else if(st === 'i' || st.includes('izin')||st.includes('ijin')) code = 'I';
-                    else if(st === 'a' || st.includes('alfa')||st.includes('alpha')) code = 'A';
-                    else if(st === 't' || st.includes('telat')||st.includes('terlambat')) code = 'T';
-                    else if(st.includes('dispen')) code = 'D';
-
-                    if(code) {
-                        if(!calData[k]) calData[k] = {};
-                        calData[k][tgl] = code; 
-                    }
-                });
-
-                let tbodyHTML = "";
-                let sortedKeys = Object.keys(calData).sort((a,b) => a.split("|")[1].localeCompare(b.split("|")[1])); 
-                
-                sortedKeys.forEach(k => {
-                    let nama = k.split("|")[1];
-                    tbodyHTML += `<tr class="border-b transition-colors"><td class="px-4 py-2 font-medium text-gray-800 sticky left-0 bg-white hover:bg-gray-50 z-10 whitespace-nowrap shadow-[1px_0_0_0_#e5e7eb] border-r border-gray-100">${nama}</td>`;
-                    for(let i=1; i<=daysInMonth; i++) {
-                        let c = calData[k][i] || '';
-                        let colorClass = "";
-                        if(c==='H') colorClass = "text-green-700 font-bold bg-green-50";
-                        else if(c==='S') colorClass = "text-yellow-700 font-bold bg-yellow-50";
-                        else if(c==='I') colorClass = "text-blue-700 font-bold bg-blue-50";
-                        else if(c==='A') colorClass = "text-red-700 font-bold bg-red-50";
-                        else if(c==='T') colorClass = "text-orange-700 font-bold bg-orange-50";
-                        else if(c==='D') colorClass = "text-purple-700 font-bold bg-purple-50";
-
-                        tbodyHTML += `<td class="px-1 py-2 text-center text-xs border-r border-gray-100 ${colorClass}">${c}</td>`;
-                    }
-                    tbodyHTML += `</tr>`;
-                });
-
-                if(sortedKeys.length === 0) tbodyHTML = `<tr><td colspan="${daysInMonth+1}" class="p-6 text-center text-gray-500">Tidak ada data kehadiran di bulan ini.</td></tr>`;
 
                 calContainer.innerHTML = `<div class="overflow-x-auto rounded-xl border border-gray-200 hide-scrollbar relative">
                     <table class="min-w-full divide-y divide-gray-200 text-sm">
-                        <thead class="bg-indigo-50">${theadHTML}</thead>
-                        <tbody class="bg-white divide-y divide-gray-100">${tbodyHTML}</tbody>
+                        <thead class="bg-indigo-50">${built.theadHTML}</thead>
+                        <tbody class="bg-white divide-y divide-gray-100">${built.tbodyHTML}</tbody>
                     </table>
                 </div>
                 <div class="mt-4 flex flex-wrap gap-3 text-xs justify-center bg-gray-50 p-2 rounded-lg border border-gray-100">
@@ -1368,8 +1365,152 @@
                     <span class="px-2 py-1 bg-red-100 text-red-800 rounded font-bold">A : Alfa</span>
                     <span class="px-2 py-1 bg-orange-100 text-orange-800 rounded font-bold">T : Terlambat</span>
                     <span class="px-2 py-1 bg-purple-100 text-purple-800 rounded font-bold">D : Dispen</span>
+                    <span class="px-2 py-1 bg-red-50 text-red-700 rounded font-bold border border-red-200">Kolom merah: Sabtu/Minggu/Tanggal Merah</span>
                 </div>`;
             }
+        }
+
+        // Membangun HTML <thead>/<tbody> tabel kalender absensi untuk satu bulan.
+        // dataRows: array baris absensi [tanggalISO, nisn, nama, kelas, status, keterangan]
+        // Mengembalikan { theadHTML, tbodyHTML, daysInMonth, jumlahSiswa }
+        // Kolom Sabtu/Minggu/tanggal merah nasional otomatis diberi latar merah.
+        function bangunTabelKalender(dataRows, year, month) {
+            let daysInMonth = new Date(year, month, 0).getDate();
+
+            let theadHTML = `<tr><th class="px-4 py-3 text-left font-bold text-indigo-900 sticky left-0 bg-indigo-100 z-20 shadow-[1px_0_0_0_#e5e7eb]">Nama Siswa</th>`;
+            for(let i=1; i<=daysInMonth; i++) {
+                let tm = cekTanggalMerah(year, month, i);
+                let headClass = tm.merah ? "bg-red-100 text-red-700" : "text-indigo-900";
+                theadHTML += `<th class="px-2 py-3 text-center font-bold min-w-[30px] border-l border-indigo-200 ${headClass}" title="${tm.label}">${i}</th>`;
+            }
+            theadHTML += `</tr>`;
+
+            let calData = {};
+            dataRows.forEach(r => {
+                let d = new Date(r[0]);
+                let tgl = d.getDate();
+                let nisn = r[1];
+                let nama = r[2];
+                let k = nisn + "|" + nama;
+
+                let statusText = (r[4] || "").toString().toLowerCase().trim();
+                let ketText = (r[5] || "").toString().toLowerCase().trim();
+                let st = statusText ? statusText : ketText;
+
+                let code = '';
+                if(st === 'h' || st.includes('hadir')) code = 'H';
+                else if(st === 's' || st.includes('sakit')) code = 'S';
+                else if(st === 'i' || st.includes('izin')||st.includes('ijin')) code = 'I';
+                else if(st === 'a' || st.includes('alfa')||st.includes('alpha')) code = 'A';
+                else if(st === 't' || st.includes('telat')||st.includes('terlambat')) code = 'T';
+                else if(st.includes('dispen')) code = 'D';
+
+                if(code) {
+                    if(!calData[k]) calData[k] = {};
+                    calData[k][tgl] = code;
+                }
+            });
+
+            let tbodyHTML = "";
+            let sortedKeys = Object.keys(calData).sort((a,b) => a.split("|")[1].localeCompare(b.split("|")[1]));
+
+            sortedKeys.forEach(k => {
+                let nama = k.split("|")[1];
+                tbodyHTML += `<tr class="border-b transition-colors"><td class="px-4 py-2 font-medium text-gray-800 sticky left-0 bg-white hover:bg-gray-50 z-10 whitespace-nowrap shadow-[1px_0_0_0_#e5e7eb] border-r border-gray-100">${nama}</td>`;
+                for(let i=1; i<=daysInMonth; i++) {
+                    let c = calData[k][i] || '';
+                    let colorClass = "";
+                    if(c==='H') colorClass = "text-green-700 font-bold bg-green-50";
+                    else if(c==='S') colorClass = "text-yellow-700 font-bold bg-yellow-50";
+                    else if(c==='I') colorClass = "text-blue-700 font-bold bg-blue-50";
+                    else if(c==='A') colorClass = "text-red-700 font-bold bg-red-50";
+                    else if(c==='T') colorClass = "text-orange-700 font-bold bg-orange-50";
+                    else if(c==='D') colorClass = "text-purple-700 font-bold bg-purple-50";
+                    else {
+                        let tm = cekTanggalMerah(year, month, i);
+                        if(tm.merah) colorClass = "bg-red-50";
+                    }
+
+                    tbodyHTML += `<td class="px-1 py-2 text-center text-xs border-r border-gray-100 ${colorClass}">${c}</td>`;
+                }
+                tbodyHTML += `</tr>`;
+            });
+
+            return { theadHTML, tbodyHTML, daysInMonth, jumlahSiswa: sortedKeys.length };
+        }
+
+        // Mencetak Kalender Absensi Bulanan dipisah per kelas (satu kelas = satu halaman cetak).
+        // Memakai data bulan yang sedang difilter (filterBulanAbsensi); kelas diambil dari
+        // seluruh data absensi bulan tsb (mengabaikan filter kelas yang sedang aktif di layar).
+        function cetakKalenderPerKelas() {
+            let fBulan = document.getElementById('filterBulanAbsensi').value;
+            if (fBulan === "Semua") {
+                showToast("Pilih bulan tertentu dulu pada filter di atas sebelum mencetak.", false);
+                return;
+            }
+            let parts = fBulan.split("-");
+            let year = parseInt(parts[0]);
+            let month = parseInt(parts[1]);
+            let monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+            let namaBulan = monthNames[month-1] + " " + year;
+
+            // Kelompokkan data absensi bulan ini per kelas
+            let perKelas = {};
+            rawDataAbsensi.forEach(r => {
+                let d = new Date(r[0]);
+                if(isNaN(d.getTime())) return;
+                if((d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,'0')) !== fBulan) return;
+                let kelas = (r[3] || "Tanpa Kelas").toString().trim();
+                if(!perKelas[kelas]) perKelas[kelas] = [];
+                perKelas[kelas].push(r);
+            });
+
+            let daftarKelas = Object.keys(perKelas).sort();
+            if(daftarKelas.length === 0) {
+                showToast("Tidak ada data absensi untuk dicetak di bulan ini.", false);
+                return;
+            }
+
+            let sectionsHTML = daftarKelas.map(kelas => {
+                let built = bangunTabelKalender(perKelas[kelas], year, month);
+                return `<div class="lembar-kelas">
+                    <h2>Kalender Absensi Bulanan - Kelas ${kelas}</h2>
+                    <p class="sub">${namaBulan}</p>
+                    <table>
+                        <thead>${built.theadHTML}</thead>
+                        <tbody>${built.tbodyHTML || '<tr><td colspan="'+(built.daysInMonth+1)+'">Tidak ada data kehadiran.</td></tr>'}</tbody>
+                    </table>
+                    <div class="legenda">
+                        <span>H: Hadir</span><span>S: Sakit</span><span>I: Izin</span><span>A: Alfa</span><span>T: Terlambat</span><span>D: Dispen</span><span class="merah">Kolom merah: Sabtu/Minggu/Tanggal Merah</span>
+                    </div>
+                </div>`;
+            }).join("");
+
+            let win = window.open('', '_blank');
+            win.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8"><title>Kalender Absensi - ${namaBulan}</title>
+            <style>
+                body{font-family: Arial, sans-serif; color:#111; margin:20px; -webkit-print-color-adjust: exact; print-color-adjust: exact;}
+                .lembar-kelas{page-break-after: always; margin-bottom: 24px;}
+                .lembar-kelas:last-child{page-break-after: auto;}
+                h2{margin:0 0 2px 0; font-size:16px;}
+                .sub{margin:0 0 10px 0; font-size:12px; color:#555;}
+                table{border-collapse: collapse; width:100%; font-size:10px;}
+                th, td{border:1px solid #ccc; padding:3px 4px; text-align:center;}
+                th:first-child, td:first-child{text-align:left; white-space:nowrap;}
+                th.bg-red-100{background:#fee2e2 !important; color:#b91c1c !important;}
+                td.bg-red-50{background:#fef2f2 !important;}
+                td.bg-green-50{background:#f0fdf4 !important; color:#15803d !important; font-weight:bold;}
+                td.bg-yellow-50{background:#fefce8 !important; color:#a16207 !important; font-weight:bold;}
+                td.bg-blue-50{background:#eff6ff !important; color:#1d4ed8 !important; font-weight:bold;}
+                td.bg-red-50.text-red-700{color:#b91c1c !important; font-weight:bold;}
+                td.bg-orange-50{background:#fff7ed !important; color:#c2410c !important; font-weight:bold;}
+                td.bg-purple-50{background:#faf5ff !important; color:#7e22ce !important; font-weight:bold;}
+                .legenda{margin-top:8px; font-size:10px; display:flex; gap:10px; flex-wrap:wrap;}
+                .legenda .merah{color:#b91c1c; font-weight:bold;}
+            </style></head><body>${sectionsHTML}</body></html>`);
+            win.document.close();
+            win.focus();
+            setTimeout(() => win.print(), 400);
         }
 
         let rawDataTelat = [];
