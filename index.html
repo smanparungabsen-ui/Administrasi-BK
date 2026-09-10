@@ -1311,9 +1311,13 @@
 
                     if(isH) count.h++; else if(isS) count.s++; else if(isI) count.i++; else if(isA) count.a++; else if(isD) count.d++;
                     
-                    if (r[1] && r[2]) {
-                        let k = r[1]+"|"+r[2]+"|"+r[3];
-                        if(!sRekap[k]) sRekap[k] = {h:0,s:0,i:0,a:0,d:0};
+                    if (r[1]) {
+                        // Kunci hanya NIS+Kelas (bukan +nama), karena penulisan nama bisa
+                        // sedikit berbeda antar baris (spasi/kapitalisasi) sehingga siswa
+                        // yang sama tidak boleh terpecah jadi baris rekap yang berbeda.
+                        let k = r[1]+"|"+r[3];
+                        if(!sRekap[k]) sRekap[k] = {h:0,s:0,i:0,a:0,d:0, nm:r[2]||''};
+                        if(!sRekap[k].nm && r[2]) sRekap[k].nm = r[2];
                         if(isH) sRekap[k].h++; else if(isS) sRekap[k].s++; else if(isI) sRekap[k].i++; else if(isA) sRekap[k].a++; else if(isD) sRekap[k].d++;
                     }
                     
@@ -1334,7 +1338,7 @@
             document.getElementById('rekapHadir').innerText = count.h; document.getElementById('rekapSakit').innerText = count.s; document.getElementById('rekapIzin').innerText = count.i; document.getElementById('rekapAlfa').innerText = count.a; document.getElementById('rekapDispen').innerText = count.d;
             document.getElementById('tabelAbsensi').innerHTML = tbodyD || "<tr><td colspan='6' class='p-4 text-center text-gray-400'>Tidak ada riwayat.</td></tr>";
 
-            let arr = Object.keys(sRekap).map(k => ({n:k.split("|")[0], nm:k.split("|")[1], kl:k.split("|")[2], d:sRekap[k]})).sort((a,b)=>b.d.a-a.d.a);
+            let arr = Object.keys(sRekap).map(k => ({n:k.split("|")[0], nm:sRekap[k].nm, kl:k.split("|")[1], d:sRekap[k]})).sort((a,b)=>b.d.a-a.d.a);
             let tbodyR = arr.map(x => `<tr class="border-b hover:bg-gray-50"><td class="px-4 py-3">${x.n}</td><td class="px-4 py-3 font-medium">${x.nm}</td><td class="px-4 py-3">${x.kl}</td><td class="px-3 py-3 text-center text-green-600">${x.d.h||'-'}</td><td class="px-3 py-3 text-center text-yellow-600">${x.d.s||'-'}</td><td class="px-3 py-3 text-center text-blue-600">${x.d.i||'-'}</td><td class="px-3 py-3 text-center text-red-600 font-bold">${x.d.a||'-'}</td><td class="px-3 py-3 text-center text-purple-600">${x.d.d||'-'}</td></tr>`).join("");
             document.getElementById('tabelRekapSiswaAbsensi').innerHTML = tbodyR || "<tr><td colspan='8' class='p-4 text-center text-gray-400'>Belum ada rekap.</td></tr>";
 
@@ -1386,12 +1390,22 @@
             theadHTML += `</tr>`;
 
             let calData = {};
+            let namaMap = {};
             dataRows.forEach(r => {
                 let d = new Date(r[0]);
+                if (isNaN(d.getTime())) return; // lewati baris dengan tanggal tidak valid
                 let tgl = d.getDate();
-                let nisn = r[1];
-                let nama = r[2];
-                let k = nisn + "|" + nama;
+                let nisn = (r[1] || "").toString().trim();
+                let nama = (r[2] || "").toString().trim();
+                if (!nisn) return;
+
+                // Kunci HANYA berdasarkan NIS (bukan NIS+nama). Kalau kunci ikut
+                // memakai nama, siswa yang sama bisa terpecah jadi beberapa baris
+                // di kalender hanya karena variasi kecil penulisan nama (spasi,
+                // huruf besar/kecil, dsb) pada baris data yang berbeda tanggal —
+                // ini yang menyebabkan sebagian tanggal siswa "hilang" dari tabel.
+                let k = nisn;
+                if (!namaMap[k] || (!namaMap[k].trim() && nama)) namaMap[k] = nama;
 
                 let statusText = (r[4] || "").toString().toLowerCase().trim();
                 let ketText = (r[5] || "").toString().toLowerCase().trim();
@@ -1412,10 +1426,10 @@
             });
 
             let tbodyHTML = "";
-            let sortedKeys = Object.keys(calData).sort((a,b) => a.split("|")[1].localeCompare(b.split("|")[1]));
+            let sortedKeys = Object.keys(calData).sort((a,b) => (namaMap[a]||'').localeCompare(namaMap[b]||''));
 
             sortedKeys.forEach(k => {
-                let nama = k.split("|")[1];
+                let nama = namaMap[k] || k;
                 tbodyHTML += `<tr class="border-b transition-colors"><td class="px-4 py-2 font-medium text-gray-800 sticky left-0 bg-white hover:bg-gray-50 z-10 whitespace-nowrap shadow-[1px_0_0_0_#e5e7eb] border-r border-gray-100">${nama}</td>`;
                 for(let i=1; i<=daysInMonth; i++) {
                     let c = calData[k][i] || '';
